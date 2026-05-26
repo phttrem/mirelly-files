@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirelly Aparecida dos Santos Morais | Química - Turma T30</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ===== PARTICLE BACKGROUND ===== -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- ===== LOADING SCREEN ===== -->
+    <div id="loadingScreen">
+        <div class="loader-core">
+            <div class="loader-ring"></div>
+            <div class="loader-ring ring2"></div>
+            <div class="loader-ring ring3"></div>
+            <div class="loader-text">MIRELLY APARECIDA</div>
+            <div class="loader-sub">DOS SANTOS MORAIS • TURMA T30</div>
+        </div>
+    </div>
+
+    <!-- ===== HEADER ===== -->
+    <header id="mainHeader">
+        <div class="header-left">
+            <div class="logo-container">
+                <div class="logo-hex">⚛</div>
+                <div class="logo-text">
+                    <span class="logo-title">Mirelly Aparecida</span>
+                    <span class="logo-subtitle">DOS SANTOS MORAIS • TURMA T30</span>
+                </div>
+            </div>
+        </div>
+        <nav class="main-nav" id="mainNav">
+            <button class="nav-tab active" data-tab="dashboard" aria-label="Dashboard">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Dashboard</span>
+            </button>
+            <button class="nav-tab" data-tab="periodic" aria-label="Tabela Periódica">
+                <span class="nav-icon">⬡</span>
+                <span class="nav-label">Tabela Periódica</span>
+            </button>
+            <button class="nav-tab" data-tab="calculators" aria-label="Calculadoras">
+                <span class="nav-icon">🧮</span>
+                <span class="nav-label">Calculadoras</span>
+            </button>
+            <button class="nav-tab" data-tab="library" aria-label="Biblioteca">
+                <span class="nav-icon">📚</span>
+                <span class="nav-label">Biblioteca</span>
+            </button>
+        </nav>
+        <div class="header-right">
+            <div class="status-indicator turma-badge">
+                <span class="status-dot"></span>
+                <span class="status-text">TURMA T30</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main id="mainContent">
+
+        <!-- ===== TAB: DASHBOARD ===== -->
+        <section id="tab-dashboard" class="tab-content active">
+            <div class="dashboard-grid">
+                <!-- Welcome Card -->
+                <div class="dash-card welcome-card tilt-card">
+                    <div class="card-glow"></div>
+                    <h2 class="welcome-title">Bem-vindo ao Portal Químico</h2>
+                    <p class="welcome-desc">Projeto desenvolvido por <strong>Mirelly Aparecida dos Santos Morais</strong> — Turma T30. Explore a Tabela Periódica interativa, utilize calculadoras avançadas e acesse a biblioteca teórica completa.</p>
+                    <div class="feature-icons">
+                        <div class="feature-item">
+                            <span class="feat-icon">⬡</span>
+                            <span class="feat-text">118 Elementos</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feat-icon">🧮</span>
+                            <span class="feat-text">4 Calculadoras</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feat-icon">📚</span>
+                            <span class="feat-text">7 Artigos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="dash-card stats-card tilt-card">
+                    <div class="card-glow"></div>
+                    <h3>📊 Status do Sistema</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-value" id="statElements">118</span>
+                            <span class="stat-label">Elementos</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="statCalcs">4</span>
+                            <span class="stat-label">Calculadoras</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="statArticles">7</span>
+                            <span class="stat-label">Artigos</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">T30</span>
+                            <span class="stat-label">Turma</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Access -->
+                <div class="dash-card quick-card tilt-card">
+                    <div class="card-glow"></div>
+                    <h3>⚡ Acesso Rápido</h3>
+                    <div class="quick-links">
+                        <button class="quick-btn" onclick="switchTab('periodic')">
+                            <span class="qb-icon">⬡</span> Tabela Periódica
+                        </button>
+                        <button class="quick-btn" onclick="switchTab('calculators')">
+                            <span class="qb-icon">🧮</span> Calculadoras
+                        </button>
+                        <button class="quick-btn" onclick="switchTab('library')">
+                            <span class="qb-icon">📚</span> Biblioteca
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Element Spotlight -->
+                <div class="dash-card spotlight-card tilt-card">
+                    <div class="card-glow"></div>
+                    <h3>🔬 Elemento em Destaque</h3>
+                    <div id="spotlightElement" class="spotlight-display">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <!-- Recent Calculation -->
+                <div class="dash-card history-card tilt-card">
+                    <div class="card-glow"></div>
+                    <h3>📝 Histórico Recente</h3>
+                    <div id="calcHistory" class="history-list">
+                        <p class="history-empty">Nenhuma calculadora utilizada ainda.</p>
+                    </div>
+                </div>
+
+                <!-- Tips -->
+                <div class="dash-card tips-card tilt-card">
+                    <div class="card-glow"></div>
+                    <h3>💡 Dica do Dia</h3>
+                    <div id="dailyTip" class="tip-content">
+                        <p>O hidrogênio é o elemento mais abundante do universo, constituindo cerca de 75% de toda a matéria bariônica.</p>
+                    </div>
+                    <button class="tip-next-btn" onclick="nextTip()">Próxima Dica →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== TAB: PERIODIC TABLE ===== -->
+        <section id="tab-periodic" class="tab-content">
+            <div class="periodic-container">
+                <div class="periodic-header">
+                    <h2 class="section-title">⬡ Tabela Periódica Interativa</h2>
+                    <div class="periodic-controls">
+                        <label>Filtro por categoria:</label>
+                        <select id="categoryFilter" onchange="filterPeriodicTable()">
+                            <option value="all">Todos os Elementos</option>
+                            <option value="nonmetal">Não-Metais</option>
+                            <option value="noble">Gases Nobres</option>
+                            <option value="alkali">Metais Alcalinos</option>
+                            <option value="alkaline">Alcalino-Terrosos</option>
+                            <option value="metal">Metais</option>
+                            <option value="metalloid">Metalóides</option>
+                            <option value="halogen">Halogênios</option>
+                            <option value="lanthanide">Lantanídeos</option>
+                            <option value="actinide">Actinídeos</option>
+                            <option value="transition">Metais de Transição</option>
+                        </select>
+                        <button class="reset-filter-btn" onclick="resetFilter()">↻ Resetar</button>
+                    </div>
+                </div>
+
+                <div class="periodic-legend">
+                    <div class="legend-item" style="--clr: #a855f7"><span class="legend-dot"></span>Não-Metais</div>
+                    <div class="legend-item" style="--clr: #06b6d4"><span class="legend-dot"></span>Gases Nobres</div>
+                    <div class="legend-item" style="--clr: #ef4444"><span class="legend-dot"></span>Metais Alcalinos</div>
+                    <div class="legend-item" style="--clr: #f59e0b"><span class="legend-dot"></span>Alcalino-Terrosos</div>
+                    <div class="legend-item" style="--clr: #3b82f6"><span class="legend-dot"></span>Metais de Transição</div>
+                    <div class="legend-item" style="--clr: #22c55e"><span class="legend-dot"></span>Metais</div>
+                    <div class="legend-item" style="--clr: #8b5cf6"><span class="legend-dot"></span>Metalóides</div>
+                    <div class="legend-item" style="--clr: #ec4899"><span class="legend-dot"></span>Halogênios</div>
+                    <div class="legend-item" style="--clr: #d946ef"><span class="legend-dot"></span>Lantanídeos</div>
+                    <div class="legend-item" style="--clr: #f97316"><span class="legend-dot"></span>Actinídeos</div>
+                </div>
+
+                <div id="periodicTableGrid" class="periodic-table-grid">
+                    <!-- Generated by JS -->
+                </div>
+
+                <!-- Element Detail Panel -->
+                <div id="elementDetail" class="element-detail-panel">
+                    <div class="detail-backdrop" onclick="closeElementDetail()"></div>
+                    <div class="detail-card">
+                        <button class="detail-close" onclick="closeElementDetail()">✕</button>
+                        <div class="detail-header">
+                            <div class="detail-symbol" id="detailSymbol"></div>
+                            <div class="detail-info">
+                                <h3 id="detailName"></h3>
+                                <span class="detail-number" id="detailNumber"></span>
+                                <span class="detail-mass" id="detailMass"></span>
+                            </div>
+                        </div>
+                        <div class="detail-body">
+                            <div class="detail-stats">
+                                <div class="detail-stat">
+                                    <span class="ds-label">Categoria</span>
+                                    <span class="ds-value" id="detailCategory"></span>
+                                </div>
+                                <div class="detail-stat">
+                                    <span class="ds-label">Fase (25°C)</span>
+                                    <span class="ds-value" id="detailPhase"></span>
+                                </div>
+                                <div class="detail-stat">
+                                    <span class="ds-label">Eletronegatividade</span>
+                                    <span class="ds-value" id="detailEN"></span>
+                                </div>
+                                <div class="detail-stat">
+                                    <span class="ds-label">Densidade (g/cm³)</span>
+                                    <span class="ds-value" id="detailDensity"></span>
+                                </div>
+                                <div class="detail-stat">
+                                    <span class="ds-label">Ponto de Fusão (°C)</span>
+                                    <span class="ds-value" id="detailFusion"></span>
+                                </div>
+                                <div class="detail-stat">
+                                    <span class="ds-label">Ponto de Ebulição (°C)</span>
+                                    <span class="ds-value" id="detailBoiling"></span>
+                                </div>
+                                <div class="detail-stat">
+                                    <span class="ds-label">Config. Eletrônica</span>
+                                    <span class="ds-value" id="detailConfig"></span>
+                                </div>
+                                <div class="detail-stat">
+                                    <span class="ds-label">Ano de Descoberta</span>
+                                    <span class="ds-value" id="detailDiscovery"></span>
+                                </div>
+                            </div>
+                            <div class="detail-visual">
+                                <canvas id="bohrCanvas" width="200" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== TAB: CALCULATORS ===== -->
+        <section id="tab-calculators" class="tab-content">
+            <h2 class="section-title">🧮 Central de Calculadoras</h2>
+
+            <!-- Calculator Sub-tabs -->
+            <div class="calc-tabs">
+                <button class="calc-tab-btn active" data-calc="pertinencia">
+                    <span class="ctb-icon">⚛</span> Relações de Pertinência
+                </button>
+                <button class="calc-tab-btn" data-calc="concentracao">
+                    <span class="ctb-icon">🧪</span> Concentração de Soluções
+                </button>
+                <button class="calc-tab-btn" data-calc="ph">
+                    <span class="ctb-icon">🔬</span> pH de Ácidos e Bases
+                </button>
+                <button class="calc-tab-btn" data-calc="titulacao">
+                    <span class="ctb-icon">⚗</span> Titulação Ácido-Base
+                </button>
+            </div>
+
+            <!-- CALC 1: Relações de Pertinência -->
+            <div id="calc-pertinencia" class="calc-panel active">
+                <div class="calc-layout">
+                    <div class="calc-inputs">
+                        <h3>⚛ Calculadora de Relações de Pertinência de Átomos</h3>
+                        <p class="calc-desc">Compare dois átomos e descubra se são isótopos, isótonos, isóbaros ou isoeletrônicos.</p>
+
+                        <div class="atom-inputs">
+                            <div class="atom-box">
+                                <h4>Átomo 1</h4>
+                                <div class="input-group">
+                                    <label for="p1_Z">Número Atômico (Z₁)</label>
+                                    <input type="number" id="p1_Z" min="1" max="118" placeholder="Ex: 6" aria-label="Número atômico do átomo 1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="p1_A">Número de Massa (A₁)</label>
+                                    <input type="number" id="p1_A" min="1" placeholder="Ex: 12" aria-label="Número de massa do átomo 1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="p1_C">Carga Iônica (C₁)</label>
+                                    <input type="number" id="p1_C" value="0" placeholder="Ex: 0" aria-label="Carga iônica do átomo 1">
+                                </div>
+                            </div>
+                            <div class="atom-box">
+                                <h4>Átomo 2</h4>
+                                <div class="input-group">
+                                    <label for="p2_Z">Número Atômico (Z₂)</label>
+                                    <input type="number" id="p2_Z" min="1" max="118" placeholder="Ex: 6" aria-label="Número atômico do átomo 2">
+                                </div>
+                                <div class="input-group">
+                                    <label for="p2_A">Número de Massa (A₂)</label>
+                                    <input type="number" id="p2_A" min="1" placeholder="Ex: 14" aria-label="Número de massa do átomo 2">
+                                </div>
+                                <div class="input-group">
+                                    <label for="p2_C">Carga Iônica (C₂)</label>
+                                    <input type="number" id="p2_C" value="0" placeholder="Ex: 0" aria-label="Carga iônica do átomo 2">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="calc-btn" onclick="calcPertinencia()">⚡ Analisar Átomos</button>
+                    </div>
+
+                    <div class="calc-results">
+                        <div id="pertinenciaResults" class="results-box">
+                            <p class="results-placeholder">Preencha os dados dos átomos e clique em "Analisar".</p>
+                        </div>
+                        <div class="calc-visual">
+                            <canvas id="pertinenciaCanvas" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CALC 2: Concentração de Soluções -->
+            <div id="calc-concentracao" class="calc-panel">
+                <div class="calc-layout">
+                    <div class="calc-inputs">
+                        <h3>🧪 Calculadora de Concentração de Soluções</h3>
+                        <p class="calc-desc">Calcule concentração comum, título (% m/V) e concentração molar.</p>
+
+                        <div class="input-group">
+                            <label for="c_massa">Massa do Soluto (g)</label>
+                            <input type="number" id="c_massa" min="0" step="any" placeholder="Ex: 58.44" aria-label="Massa do soluto em gramas">
+                        </div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="c_volume">Volume da Solução</label>
+                                <input type="number" id="c_volume" min="0" step="any" placeholder="Ex: 1" aria-label="Volume da solução">
+                            </div>
+                            <div class="input-group small">
+                                <label for="c_volUnit">Unidade</label>
+                                <select id="c_volUnit">
+                                    <option value="L">Litros (L)</option>
+                                    <option value="mL">Mililitros (mL)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="c_mm">Massa Molar do Soluto (g/mol)</label>
+                            <input type="number" id="c_mm" min="0" step="any" placeholder="Ex: 58.44 (NaCl)" aria-label="Massa molar do soluto">
+                        </div>
+
+                        <button class="calc-btn" onclick="calcConcentracao()">⚡ Calcular Concentrações</button>
+                    </div>
+
+                    <div class="calc-results">
+                        <div id="concentracaoResults" class="results-box">
+                            <p class="results-placeholder">Preencha os dados e clique em "Calcular".</p>
+                        </div>
+                        <div class="calc-visual">
+                            <canvas id="concentracaoCanvas" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CALC 3: pH de Ácidos e Bases -->
+            <div id="calc-ph" class="calc-panel">
+                <div class="calc-layout">
+                    <div class="calc-inputs">
+                        <h3>🔬 Calculadora de pH de Ácidos e Bases</h3>
+                        <p class="calc-desc">Determine o pH considerando força, tipo de dissociação e grau de ionização.</p>
+
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="ph_natureza">Natureza</label>
+                                <select id="ph_natureza">
+                                    <option value="acido">Ácido</option>
+                                    <option value="base">Base</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="ph_forca">Força</label>
+                                <select id="ph_forca">
+                                    <option value="forte">Forte</option>
+                                    <option value="moderado">Moderado</option>
+                                    <option value="fraco">Fraco</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="ph_tipo">Tipo de Dissociação</label>
+                                <select id="ph_tipo">
+                                    <option value="1">Mono-protic (1 H⁺/OH⁻)</option>
+                                    <option value="2">Di-protic (2 H⁺/OH⁻)</option>
+                                    <option value="3">Tri-protic (3 H⁺/OH⁻)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="ph_conc">Concentração Inicial (mol/L)</label>
+                            <input type="number" id="ph_conc" min="0" step="any" placeholder="Ex: 0.01" aria-label="Concentração inicial">
+                        </div>
+
+                        <div class="ph-method-toggle">
+                            <button class="ph-toggle-btn active" data-method="alpha" onclick="setPhMethod('alpha')">Usar Grau de Ionização (α)</button>
+                            <button class="ph-toggle-btn" data-method="ka" onclick="setPhMethod('ka')">Usar Constante (Kₐ/K_b)</button>
+                        </div>
+
+                        <div id="phAlphaGroup" class="input-group">
+                            <label for="ph_alpha">Grau de Ionização α (%)</label>
+                            <input type="number" id="ph_alpha" min="0" max="100" step="any" placeholder="Ex: 100 (forte)" aria-label="Grau de ionização em porcentagem">
+                        </div>
+                        <div id="phKaGroup" class="input-group" style="display:none">
+                            <label for="ph_ka">Constante Kₐ ou K_b</label>
+                            <input type="text" id="ph_ka" placeholder="Ex: 1.8e-5" aria-label="Constante de dissociação">
+                        </div>
+
+                        <button class="calc-btn" onclick="calcPH()">⚡ Calcular pH</button>
+                    </div>
+
+                    <div class="calc-results">
+                        <div id="phResults" class="results-box">
+                            <p class="results-placeholder">Preencha os dados e clique em "Calcular".</p>
+                        </div>
+                        <div class="calc-visual">
+                            <canvas id="phCanvas" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CALC 4: Titulação -->
+            <div id="calc-titulacao" class="calc-panel">
+                <div class="calc-layout">
+                    <div class="calc-inputs">
+                        <h3>⚗ Calculadora de Titulação Ácido-Base</h3>
+                        <p class="calc-desc">Calcule parâmetros de neutralização e visualize a curva de titulação.</p>
+
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="t_valA">Valência do Ácido (x_A)</label>
+                                <input type="number" id="t_valA" min="1" max="6" value="1" aria-label="Valência do ácido">
+                            </div>
+                            <div class="input-group">
+                                <label for="t_valB">Valência da Base (x_B)</label>
+                                <input type="number" id="t_valB" min="1" max="6" value="1" aria-label="Valência da base">
+                            </div>
+                        </div>
+
+                        <div class="titulacao-section">
+                            <h4>Ácido (Analito)</h4>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="t_mA">Concentração M_A (mol/L)</label>
+                                    <input type="number" id="t_mA" min="0" step="any" placeholder="Ex: 0.1" aria-label="Concentração do ácido">
+                                </div>
+                                <div class="input-group">
+                                    <label for="t_vA">Volume V_A (mL)</label>
+                                    <input type="number" id="t_vA" min="0" step="any" placeholder="Ex: 50" aria-label="Volume do ácido">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="titulacao-section">
+                            <h4>Base (Titulante)</h4>
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="t_mB">Concentração M_B (mol/L)</label>
+                                    <input type="number" id="t_mB" min="0" step="any" placeholder="Ex: 0.1" aria-label="Concentração da base">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="t_ka">Kₐ do Ácido (para curva de pH — opcional)</label>
+                            <input type="text" id="t_ka" placeholder="Ex: 1.8e-5 (ácido fraco) ou deixe vazio para ácido forte" aria-label="Constante de dissociação do ácido">
+                        </div>
+
+                        <button class="calc-btn" onclick="calcTitulacao()">⚡ Calcular Titulação</button>
+                    </div>
+
+                    <div class="calc-results">
+                        <div id="titulacaoResults" class="results-box">
+                            <p class="results-placeholder">Preencha os dados e clique em "Calcular".</p>
+                        </div>
+                        <div class="calc-visual">
+                            <canvas id="titulacaoCanvas" width="500" height="350"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== TAB: LIBRARY ===== -->
+        <section id="tab-library" class="tab-content">
+            <h2 class="section-title">📚 Biblioteca Científica</h2>
+
+            <div class="library-layout">
+                <!-- Article List -->
+                <div class="article-list" id="articleList">
+                    <div class="article-item active" data-article="1" onclick="showArticle(1)">
+                        <span class="art-num">01</span>
+                        <span class="art-title">A Tabela Periódica</span>
+                    </div>
+                    <div class="article-item" data-article="2" onclick="showArticle(2)">
+                        <span class="art-num">02</span>
+                        <span class="art-title">Ligações Químicas e Polaridade</span>
+                    </div>
+                    <div class="article-item" data-article="3" onclick="showArticle(3)">
+                        <span class="art-num">03</span>
+                        <span class="art-title">Solubilidade e Misturas</span>
+                    </div>
+                    <div class="article-item" data-article="4" onclick="showArticle(4)">
+                        <span class="art-num">04</span>
+                        <span class="art-title">Preparo de Soluções e Concentrações</span>
+                    </div>
+                    <div class="article-item" data-article="5" onclick="showArticle(5)">
+                        <span class="art-num">05</span>
+                        <span class="art-title">Dissociação da Água</span>
+                    </div>
+                    <div class="article-item" data-article="6" onclick="showArticle(6)">
+                        <span class="art-num">06</span>
+                        <span class="art-title">Ácidos e Bases</span>
+                    </div>
+                    <div class="article-item" data-article="7" onclick="showArticle(7)">
+                        <span class="art-num">07</span>
+                        <span class="art-title">Neutralização e Titulação</span>
+                    </div>
+                </div>
+
+                <!-- Article Reader -->
+                <div class="article-reader" id="articleReader">
+                    <div id="articleContent" class="article-content">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer id="mainFooter">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <span class="footer-logo">⚛</span>
+                <span>Mirelly Aparecida dos Santos Morais</span>
+            </div>
+            <p class="footer-text">Química Geral — Turma T30 | Projeto Educativo Interativo</p>
+            <div class="footer-links">
+                <a href="#" onclick="switchTab('dashboard')">Dashboard</a>
+                <a href="#" onclick="switchTab('periodic')">Tabela</a>
+                <a href="#" onclick="switchTab('calculators')">Calculadoras</a>
+                <a href="#" onclick="switchTab('library')">Biblioteca</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="elements.js"></script>
+    <script src="script.js"></script>
+      <div id="loadingScreen">
+        <div class="loader-core">
+            <div class="loader-ring"></div>
+            <div class="loader-ring ring2"></div>
+            <div class="loader-ring ring3"></div>
+            <div class="loader-text">MIRELLY APARECIDA</div>
+            <div class="loader-sub">DOS SANTOS MORAIS • TURMA T30</div>
+            <div class="loader-hint"> Clique em qualquer lugar para acessar </div>
+        </div>
+    </div>
+</body>
+</html>
