@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mirelly LAB — Mirelly Aparecida dos Santos Morais | Turma T30</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg-deep: #05020c;
+  --bg-dark: #0f0720;
+  --neon-purple: #a855f7;
+  --neon-magenta: #ec4899;
+  --neon-cyan: #06b6d4;
+  --text-white: #f8fafc;
+  --text-lavender: #cbd5e1;
+  --glass-bg: rgba(15, 7, 32, 0.6);
+  --glass-border: rgba(168, 85, 247, 0.3);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-deep);
+  color: var(--text-white);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+h1, h2, h3, h4, .font-orbitron { font-family: 'Orbitron', sans-serif; }
+.bg-particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.app-container { position: relative; z-index: 1; max-width: 1600px; margin: 0 auto; padding: 0 1rem; }
+
+/* LOADING SCREEN */
+.loading-screen {
+  position: fixed; inset: 0; z-index: 10000;
+  background: radial-gradient(ellipse at center, #0f0720 0%, #05020c 70%);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+.loading-screen.hidden {
+  opacity: 0; visibility: hidden;
+}
+.atom-loader {
+  position: relative; width: 160px; height: 160px;
+  margin-bottom: 2rem;
+}
+.atom-nucleus {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px; height: 18px;
+  background: radial-gradient(circle, #a855f7, #ec4899);
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(168,85,247,0.8), 0 0 40px rgba(236,72,153,0.4);
+}
+.atom-orbit {
+  position: absolute; top: 50%; left: 50%;
+  width: 120px; height: 120px;
+  border: 2px solid rgba(168, 85, 247, 0.4);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: spinAtom 1.5s linear infinite;
+}
+.atom-orbit:nth-child(2) { animation-delay: -0.5s; border-color: rgba(236,72,153,0.4); }
+.atom-orbit:nth-child(3) { animation-delay: -1s; border-color: rgba(6,182,212,0.4); }
+.atom-orbit:nth-child(2) { transform: translate(-50%, -50%) rotate(60deg); }
+.atom-orbit:nth-child(3) { transform: translate(-50%, -50%) rotate(-60deg); }
+.atom-electron {
+  position: absolute; top: -5px; left: 50%;
+  transform: translateX(-50%);
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+}
+.atom-orbit:nth-child(1) .atom-electron { background: #a855f7; color: #a855f7; }
+.atom-orbit:nth-child(2) .atom-electron { background: #ec4899; color: #ec4899; }
+.atom-orbit:nth-child(3) .atom-electron { background: #06b6d4; color: #06b6d4; }
+
+@keyframes spinAtom {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+.atom-orbit:nth-child(2) { animation-name: spinAtom2; }
+.atom-orbit:nth-child(3) { animation-name: spinAtom3; }
+@keyframes spinAtom2 {
+  from { transform: translate(-50%, -50%) rotate(60deg); }
+  to { transform: translate(-50%, -50%) rotate(420deg); }
+}
+@keyframes spinAtom3 {
+  from { transform: translate(-50%, -50%) rotate(-60deg); }
+  to { transform: translate(-50%, -50%) rotate(300deg); }
+}
+
+.loading-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(0.8rem, 2vw, 1.1rem);
+  color: var(--text-lavender);
+  text-align: center;
+  letter-spacing: 3px;
+  animation: pulseText 1.5s ease-in-out infinite;
+}
+.loading-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  color: rgba(203, 213, 225, 0.5);
+  margin-top: 0.5rem;
+  text-align: center;
+  letter-spacing: 1px;
+}
+@keyframes pulseText {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.loading-progress {
+  width: 200px; height: 3px;
+  background: rgba(168,85,247,0.2);
+  border-radius: 3px;
+  margin-top: 1.5rem;
+  overflow: hidden;
+}
+.loading-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--neon-purple), var(--neon-magenta), var(--neon-cyan));
+  border-radius: 3px;
+  transition: width 0.1s linear;
+}
+
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(5, 2, 12, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 0.75rem 0;
+}
+.header-inner {
+  max-width: 1600px; margin: 0 auto; padding: 0 1rem;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.5rem;
+}
+.logo {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0.1rem;
+}
+.logo-main {
+  display: flex; align-items: center; gap: 0.75rem;
+  font-family: 'Orbitron', sans-serif; font-size: 1.25rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-magenta), var(--neon-cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.logo-sub {
+  font-size: 0.55rem;
+  color: var(--text-lavender);
+  letter-spacing: 1px;
+  opacity: 0.7;
+}
+.logo svg { width: 40px; height: 40px; flex-shrink: 0; }
+nav { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+.nav-btn {
+  font-family: 'Orbitron', sans-serif; font-size: 0.7rem;
+  padding: 0.5rem 1rem; border: 1px solid var(--glass-border);
+  background: transparent; color: var(--text-lavender);
+  border-radius: 8px; cursor: pointer; transition: all 0.3s;
+  white-space: nowrap;
+}
+.nav-btn:hover, .nav-btn.active {
+  background: rgba(168, 85, 247, 0.2);
+  border-color: var(--neon-purple);
+  color: var(--text-white);
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+}
+.tab-content { display: none; animation: fadeSlide 0.5s ease; }
+.tab-content.active { display: block; }
+@keyframes fadeSlide { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(168,85,247,0.5); }
+  50% { box-shadow: 0 0 25px rgba(168,85,247,0.8), 0 0 50px rgba(236,72,153,0.3); }
+}
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.glass-card:hover {
+  box-shadow: 0 8px 32px rgba(168, 85, 247, 0.2);
+}
+.neon-text {
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-magenta));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-weight: 700; margin-bottom: 1.5rem;
+  text-align: center;
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-magenta), var(--neon-cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.input-group { margin-bottom: 1rem; }
+.input-group label {
+  display: block; font-size: 0.8rem; color: var(--neon-purple);
+  margin-bottom: 0.35rem; font-weight: 600; font-family: 'Orbitron', sans-serif;
+  letter-spacing: 0.5px;
+}
+.input-group input, .input-group select {
+  width: 100%; padding: 0.65rem 1rem;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 8px; color: var(--text-white);
+  font-family: 'Inter', sans-serif; font-size: 0.95rem;
+  transition: all 0.3s; outline: none;
+}
+.input-group input:focus, .input-group select:focus {
+  border-color: var(--neon-purple);
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+}
+.input-group select option { background: var(--bg-dark); }
+.btn-calc {
+  width: 100%; padding: 0.75rem; margin-top: 0.5rem;
+  font-family: 'Orbitron', sans-serif; font-weight: 700;
+  font-size: 0.85rem; letter-spacing: 1px;
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-magenta));
+  border: none; border-radius: 8px; color: white;
+  cursor: pointer; transition: all 0.3s;
+}
+.btn-calc:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+}
+.result-box {
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  border-radius: 12px; padding: 1rem; margin-top: 1rem;
+  font-size: 0.9rem;
+}
+.result-box h4 { color: var(--neon-cyan); margin-bottom: 0.5rem; }
+.result-badge {
+  display: inline-block; padding: 0.25rem 0.75rem;
+  background: rgba(168, 85, 247, 0.2);
+  border: 1px solid var(--neon-purple);
+  border-radius: 20px; font-size: 0.75rem;
+  font-family: 'Orbitron', sans-serif;
+  margin: 0.25rem;
+}
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+.grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+
+/* Periodic Table */
+.pt-grid {
+  display: grid;
+  grid-template-columns: repeat(18, minmax(0, 1fr));
+  gap: 2px; margin: 1rem auto;
+  max-width: 1400px; overflow-x: auto;
+  padding-bottom: 1rem;
+}
+.el-cell {
+  aspect-ratio: 1; min-width: 52px;
+  background: rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.15);
+  border-radius: 4px; padding: 2px;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-size: 0.55rem; text-align: center;
+  position: relative; overflow: hidden;
+}
+.el-cell:hover {
+  transform: scale(1.3); z-index: 10;
+  border-color: var(--neon-purple);
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+  background: rgba(168, 85, 247, 0.2);
+}
+.el-cell .num { font-size: 0.5rem; opacity: 0.7; }
+.el-cell .sym { font-size: 0.85rem; font-weight: 700; font-family: 'Orbitron', sans-serif; }
+.el-cell .name { font-size: 0.45rem; opacity: 0.8; display: none; }
+.el-cell:hover .name { display: block; }
+.el-cell .mass { font-size: 0.4rem; opacity: 0.6; }
+.cat-na { border-left: 2px solid #3b82f6; }
+.cat-ng { border-left: 2px solid #8b5cf6; }
+.cat-am { border-left: 2px solid #ef4444; }
+.cat-ae { border-left: 2px solid #f97316; }
+.cat-ml { border-left: 2px solid #22c55e; }
+.cat-nm { border-left: 2px solid #14b8a6; }
+.cat-ha { border-left: 2px solid #06b6d4; }
+.cat-pt { border-left: 2px solid #eab308; }
+.cat-ln { border-left: 2px solid #a855f7; }
+.cat-ac { border-left: 2px solid #ec4899; }
+.pt-separator { grid-column: 1 / -1; height: 15px; }
+.pt-label { font-size: 0.65rem; color: var(--text-lavender); padding: 0.25rem; text-align: center; font-family: 'Orbitron', sans-serif; }
+.legend { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin: 1rem 0; }
+.legend-item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.65rem; }
+.legend-color { width: 10px; height: 10px; border-radius: 2px; }
+
+/* Element Detail Modal */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(5, 2, 12, 0.9);
+  backdrop-filter: blur(10px);
+  justify-content: center; align-items: center;
+  padding: 1rem;
+}
+.modal-overlay.show { display: flex; }
+.modal-content {
+  background: var(--bg-dark);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px; padding: 2rem;
+  max-width: 500px; width: 100%;
+  max-height: 90vh; overflow-y: auto;
+  position: relative;
+  animation: modalIn 0.3s ease;
+}
+@keyframes modalIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal-close {
+  position: absolute; top: 1rem; right: 1rem;
+  background: none; border: 1px solid var(--glass-border);
+  color: var(--text-white); width: 32px; height: 32px;
+  border-radius: 50%; cursor: pointer; font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.bohr-canvas { display: block; margin: 1rem auto; }
+
+/* Library */
+.library-card { cursor: pointer; padding: 1.5rem; position: relative; overflow: hidden; }
+.library-card::before {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: linear-gradient(to bottom, var(--neon-purple), var(--neon-magenta));
+}
+.library-card h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+.library-card p { font-size: 0.85rem; color: var(--text-lavender); line-height: 1.5; }
+.library-card .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+.article-view { display: none; }
+.article-view.active { display: block; }
+.article-view .article-content { line-height: 1.8; font-size: 0.95rem; color: var(--text-lavender); }
+.article-view .article-content h2 { color: var(--neon-purple); margin: 1.5rem 0 0.75rem; font-size: 1.3rem; }
+.article-view .article-content h3 { color: var(--neon-magenta); margin: 1.25rem 0 0.5rem; font-size: 1.05rem; }
+.article-view .article-content p { margin-bottom: 0.75rem; }
+.article-view .article-content ul, .article-view .article-content ol { margin: 0.5rem 0 0.5rem 1.5rem; }
+.article-view .article-content li { margin-bottom: 0.3rem; }
+.article-view .ref-box {
+  background: rgba(168, 85, 247, 0.1);
+  border-left: 3px solid var(--neon-purple);
+  padding: 1rem; margin: 1rem 0;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.8rem; color: var(--text-lavender);
+}
+.back-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1rem; margin-bottom: 1rem;
+  background: transparent; border: 1px solid var(--glass-border);
+  color: var(--neon-purple); border-radius: 8px;
+  cursor: pointer; font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem; transition: all 0.3s;
+}
+.back-btn:hover { background: rgba(168, 85, 247, 0.1); }
+
+.calc-visual { text-align: center; margin: 1rem 0; }
+.calc-visual svg { max-width: 100%; height: auto; }
+.titr-canvas { width: 100%; height: 250px; border-radius: 12px; background: rgba(15, 7, 32, 0.8); border: 1px solid var(--glass-border); }
+
+@media (max-width: 768px) {
+  .header-inner { flex-direction: column; align-items: stretch; }
+  nav { justify-content: center; }
+  .nav-btn { font-size: 0.6rem; padding: 0.4rem 0.6rem; }
+  .el-cell { min-width: 36px; }
+  .el-cell .sym { font-size: 0.65rem; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .el-cell { min-width: 28px; }
+  .el-cell .sym { font-size: 0.55rem; }
+  .el-cell .num { font-size: 0.4rem; }
+  .el-cell .mass { display: none; }
+}
+.empty-cell { min-width: 52px; }
+.dashboard-hero {
+  text-align: center; padding: 3rem 1rem;
+  background: radial-gradient(ellipse at center, rgba(168, 85, 247, 0.15) 0%, transparent 70%);
+}
+.dashboard-hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 0.5rem; }
+.dashboard-hero p { font-size: 1.1rem; color: var(--text-lavender); max-width: 600px; margin: 0 auto; }
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+.feature-card { text-align: center; padding: 2rem 1.5rem; cursor: pointer; }
+.feature-card .icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.feature-card h3 { margin-bottom: 0.5rem; font-size: 1rem; }
+.feature-card p { font-size: 0.8rem; color: var(--text-lavender); }
+.stat-card { text-align: center; }
+.stat-card .stat-value {
+  font-size: 2rem; font-weight: 900;
+  font-family: 'Orbitron', sans-serif;
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-card .stat-label { font-size: 0.75rem; color: var(--text-lavender); margin-top: 0.25rem; }
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="atom-loader">
+    <div class="atom-nucleus"></div>
+    <div class="atom-orbit">
+      <div class="atom-electron"></div>
+    </div>
+    <div class="atom-orbit">
+      <div class="atom-electron"></div>
+    </div>
+    <div class="atom-orbit">
+      <div class="atom-electron"></div>
+    </div>
+  </div>
+  <div class="loading-text">NEXUS CHEM LAB</div>
+  <div class="loading-sub">Mirelly Aparecida dos Santos Morais — Turma T30</div>
+  <div class="loading-progress">
+    <div class="loading-bar" id="loadingBar"></div>
+  </div>
+</div>
+
+<canvas class="bg-particles" id="bgCanvas"></canvas>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-main">
+        <svg viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="18" stroke="url(#logoGrad)" stroke-width="2" fill="none"/>
+          <ellipse cx="20" cy="20" rx="18" ry="8" stroke="url(#logoGrad)" stroke-width="1.5" fill="none" transform="rotate(30 20 20)"/>
+          <ellipse cx="20" cy="20" rx="18" ry="8" stroke="url(#logoGrad)" stroke-width="1.5" fill="none" transform="rotate(-30 20 20)"/>
+          <ellipse cx="20" cy="20" rx="18" ry="8" stroke="url(#logoGrad)" stroke-width="1.5" fill="none" transform="rotate(90 20 20)"/>
+          <circle cx="20" cy="20" r="3" fill="#a855f7"/>
+          <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="40" y2="40"><stop offset="0%" stop-color="#a855f7"/><stop offset="50%" stop-color="#ec4899"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs>
+        </svg>
+        MIRELLY LAB
+      </div>
+      <div class="logo-sub">Mirelly Aparecida dos Santos Morais — Turma T30</div>
+    </div>
+    <nav>
+      <button class="nav-btn active" onclick="switchTab('dashboard')">Dashboard</button>
+      <button class="nav-btn" onclick="switchTab('periodic')">Tabela Periódica</button>
+      <button class="nav-btn" onclick="switchTab('library')">Biblioteca</button>
+      <button class="nav-btn" onclick="switchTab('calc-atom')">Calculadoras</button>
+    </nav>
+  </div>
+</header>
+
+<main class="app-container">
+
+<!-- DASHBOARD -->
+<section id="tab-dashboard" class="tab-content active">
+  <div class="dashboard-hero">
+    <h1 class="neon-text">MIRELLY LAB</h1>
+    <p>Bases Moleculares e químicas dos seres vivos na Odontologia  
+    professor: Natanael Calixto Roberto</p>
+    <p style="margin-top:0.5rem;font-size:0.85rem;opacity:0.6;">Mirelly Aparecida dos Santos Morais — Turma T30</p>
+  </div>
+  <div class="grid-4" style="margin:2rem 0;">
+    <div class="glass-card stat-card"><div class="stat-value">118</div><div class="stat-label">Elementos</div></div>
+    <div class="glass-card stat-card"><div class="stat-value">7</div><div class="stat-label">Artigos</div></div>
+    <div class="glass-card stat-card"><div class="stat-value">4</div><div class="stat-label">Calculadoras</div></div>
+    <div class="glass-card stat-card"><div class="stat-value">∞</div><div class="stat-label">Descobertas</div></div>
+  </div>
+  <div class="feature-grid">
+    <div class="glass-card feature-card" onclick="switchTab('periodic')">
+      <div class="icon">⚛️</div><h3>Tabela Periódica</h3><p>Explore os 118 elementos com detalhes completos e modelo de Bohr interativo.</p>
+    </div>
+    <div class="glass-card feature-card" onclick="switchTab('library')">
+      <div class="icon">📚</div><h3>Biblioteca Teórica</h3><p>7 artigos completos referenciados sobre química geral.</p>
+    </div>
+    <div class="glass-card feature-card" onclick="switchTab('calc-atom')">
+      <div class="icon">🔬</div><h3>Calculadora de Átomos</h3><p>Relações de isotopia, isobaria, isotonia e isoeletronicidade.</p>
+    </div>
+    <div class="glass-card feature-card" onclick="switchTab('calc-solution')">
+      <div class="icon">🧪</div><h3>Concentração</h3><p>Concentração comum, título e molaridade com visualização 3D.</p>
+    </div>
+    <div class="glass-card feature-card" onclick="switchTab('calc-ph')">
+      <div class="icon">⚗️</div><h3>pH de Ácidos e Bases</h3><p>Calcule pH com força, tipo e constante de dissociação.</p>
+    </div>
+    <div class="glass-card feature-card" onclick="switchTab('calc-titration')">
+      <div class="icon">📊</div><h3>Titulação</h3><p>Curva de titulação sigmoidal e simulação de bureta/Erlenmeyer.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PERIODIC TABLE -->
+<section id="tab-periodic" class="tab-content">
+  <h2 class="section-title">Tabela Periódica Interativa</h2>
+  <div class="legend" id="ptLegend"></div>
+  <div class="pt-grid" id="ptGrid"></div>
+  <div id="ptDetail" class="glass-card" style="margin-top:1rem; display:none; max-width:600px; margin-left:auto; margin-right:auto;">
+    <div id="ptDetailContent"></div>
+  </div>
+</section>
+
+<!-- LIBRARY -->
+<section id="tab-library" class="tab-content">
+  <h2 class="section-title">Biblioteca Científica</h2>
+  <div id="libraryList" class="grid-3"></div>
+  <div id="articleViews"></div>
+</section>
+
+<!-- CALCULATOR: ATOM -->
+<section id="tab-calc-atom" class="tab-content">
+  <h2 class="section-title">Calculadora de Relações Atômicas</h2>
+  <div class="glass-card" style="max-width:800px; margin:0 auto;">
+    <div class="grid-2">
+      <div>
+        <h4 style="color:var(--neon-purple); margin-bottom:0.75rem;">Átomo 1</h4>
+        <div class="input-group"><label>Massa (A₁)</label><input type="number" id="a1_A" value="12" min="1"></div>
+        <div class="input-group"><label>Número Atômico (Z₁)</label><input type="number" id="a1_Z" value="6" min="1"></div>
+        <div class="input-group"><label>Carga Iônica (C₁)</label><input type="number" id="a1_C" value="0" step="1"></div>
+      </div>
+      <div>
+        <h4 style="color:var(--neon-magenta); margin-bottom:0.75rem;">Átomo 2</h4>
+        <div class="input-group"><label>Massa (A₂)</label><input type="number" id="a2_A" value="14" min="1"></div>
+        <div class="input-group"><label>Número Atômico (Z₂)</label><input type="number" id="a2_Z" value="6" min="1"></div>
+        <div class="input-group"><label>Carga Iônica (C₂)</label><input type="number" id="a2_C" value="0" step="1"></div>
+      </div>
+    </div>
+    <button class="btn-calc" onclick="calcAtom()">Calcular Relações</button>
+    <div id="atomResult" class="result-box" style="display:none;"></div>
+    <div id="atomCompare" class="grid-2" style="margin-top:1rem;"></div>
+  </div>
+</section>
+
+<!-- CALCULATOR: SOLUTION -->
+<section id="tab-calc-solution" class="tab-content">
+  <h2 class="section-title">Calculadora de Concentração de Soluções</h2>
+  <div class="grid-2">
+    <div class="glass-card">
+      <div class="input-group"><label>Massa do Soluto (g)</label><input type="number" id="sol_mass" value="36.5" step="any" min="0"></div>
+      <div class="input-group"><label>Volume da Solução (L)</label><input type="number" id="sol_vol" value="1" step="any" min="0.001"></div>
+      <div class="input-group"><label>Massa Molar (g/mol)</label><input type="number" id="sol_mm" value="36.5" step="any" min="0.001"></div>
+      <button class="btn-calc" onclick="calcSolution()">Calcular Concentrações</button>
+      <div id="solResult" class="result-box" style="display:none;"></div>
+    </div>
+    <div class="glass-card calc-visual">
+      <svg id="flaskSVG" viewBox="0 0 200 300" style="max-height:300px;">
+        <defs>
+          <linearGradient id="liquidGrad" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#c084fc"/>
+          </linearGradient>
+          <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <g filter="url(#glow)">
+          <path d="M75,20 L75,90 L30,250 Q28,265 45,265 L155,265 Q172,265 170,250 L125,90 L125,20 Z" fill="none" stroke="rgba(168,85,247,0.5)" stroke-width="2"/>
+          <rect x="65" y="15" width="70" height="8" rx="3" fill="none" stroke="rgba(168,85,247,0.5)" stroke-width="2"/>
+          <clipPath id="flaskClip"><path d="M76,91 L31,249 Q29,264 46,264 L154,264 Q171,264 169,249 L124,91 Z"/></clipPath>
+          <g clip-path="url(#flaskClip)">
+            <rect id="liquidRect" x="25" y="264" width="150" height="0" fill="url(#liquidGrad)" opacity="0.7"/>
+          </g>
+          <text x="100" y="150" text-anchor="middle" fill="#cbd5e1" font-size="12" font-family="Orbitron" id="flaskLabel">0.00 mol/L</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULATOR: pH -->
+<section id="tab-calc-ph" class="tab-content">
+  <h2 class="section-title">Calculadora de pH</h2>
+  <div class="grid-2">
+    <div class="glass-card">
+      <div class="input-group"><label>Natureza</label><select id="ph_nature"><option value="acid">Ácido</option><option value="base">Base</option></select></div>
+      <div class="input-group"><label>Força</label><select id="ph_strength"><option value="strong">Forte (α=100%)</option><option value="moderate">Moderada</option><option value="weak">Fraca</option></select></div>
+      <div class="input-group"><label>Tipo</label><select id="ph_type"><option value="1">Monoprótico/Monobásico (x=1)</option><option value="2">Diprótico/Dibásico (x=2)</option><option value="3">Triprótico/Tribásico (x=3)</option></select></div>
+      <div class="input-group"><label>Concentração Inicial (mol/L)</label><input type="number" id="ph_conc" value="0.01" step="any" min="0.0000001"></div>
+      <div class="input-group"><label>Modo de Cálculo</label><select id="ph_mode" onchange="togglePhInput()"><option value="alpha">Usar α (%)</option><option value="constant">Usar Ka/Kb</option></select></div>
+      <div class="input-group" id="phAlphaGroup"><label>α (%)</label><input type="number" id="ph_alpha" value="100" step="any" min="0" max="100"></div>
+      <div class="input-group" id="phConstGroup" style="display:none;"><label>Ka ou Kb</label><input type="number" id="ph_k" value="1.8e-5" step="any" min="0"></div>
+      <button class="btn-calc" onclick="calcPH()">Calcular pH</button>
+      <div id="phResult" class="result-box" style="display:none;"></div>
+    </div>
+    <div class="glass-card calc-visual">
+      <svg id="tubeSVG" viewBox="0 0 120 250" style="max-height:280px;">
+        <defs>
+          <linearGradient id="tubeGrad" x1="0" y1="1" x2="0" y2="0">
+            <stop id="tubeStop1" offset="0%" stop-color="#ef4444"/><stop id="tubeStop2" offset="100%" stop-color="#f97316"/>
+          </linearGradient>
+          <filter id="tubeGlow"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <g filter="url(#tubeGlow)">
+          <rect x="35" y="30" width="50" height="200" rx="5" ry="25" fill="none" stroke="rgba(168,85,247,0.5)" stroke-width="2"/>
+          <rect x="30" y="20" width="60" height="15" rx="5" fill="none" stroke="rgba(168,85,247,0.5)" stroke-width="2"/>
+          <clipPath id="tubeClip"><rect x="36" y="45" width="48" height="185" rx="3" ry="23"/></clipPath>
+          <g clip-path="url(#tubeClip)">
+            <rect id="tubeLiquid" x="36" y="100" width="48" height="130" fill="url(#tubeGrad)" opacity="0.6"/>
+          </g>
+          <text x="60" y="230" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Orbitron" id="tubeLabel">pH: --</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULATOR: TITRATION -->
+<section id="tab-calc-titration" class="tab-content">
+  <h2 class="section-title">Calculadora de Titulação Ácido-Base</h2>
+  <div class="grid-2">
+    <div class="glass-card">
+      <h4 style="color:var(--neon-purple); margin-bottom:0.5rem;">Dados do Ácido</h4>
+      <div class="input-group"><label>Valência (x_A)</label><input type="number" id="tit_xA" value="1" min="1"></div>
+      <div class="input-group"><label>Concentração (mol/L)</label><input type="number" id="tit_mA" value="0.1" step="any" min="0.0001"></div>
+      <div class="input-group"><label>Volume (mL)</label><input type="number" id="tit_VA" value="50" min="1"></div>
+      <h4 style="color:var(--neon-magenta); margin:1rem 0 0.5rem;">Dados da Base</h4>
+      <div class="input-group"><label>Valência (x_B)</label><input type="number" id="tit_xB" value="1" min="1"></div>
+      <div class="input-group"><label>Concentração (mol/L)</label><input type="number" id="tit_mB" value="0.1" step="any" min="0.0001"></div>
+      <div class="input-group"><label>Volume a adicionar (mL)</label><input type="number" id="tit_VB_max" value="100" min="1"></div>
+      <button class="btn-calc" onclick="calcTitration()">Calcular e Plotar Curva</button>
+      <div id="titResult" class="result-box" style="display:none;"></div>
+    </div>
+    <div class="glass-card">
+      <canvas id="titrationCanvas" class="titr-canvas"></canvas>
+      <div style="margin-top:1rem;" class="calc-visual">
+        <svg id="buretteSVG" viewBox="0 0 200 260" style="max-height:260px;">
+          <defs>
+            <linearGradient id="buretteGrad" x1="0" y1="1" x2="0" y2="0">
+              <stop id="buretteStop" offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#ec4899"/>
+            </linearGradient>
+            <filter id="bGlow"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <g filter="url(#bGlow)">
+            <rect x="80" y="5" width="40" height="120" rx="5" fill="none" stroke="rgba(168,85,247,0.5)" stroke-width="2"/>
+            <rect x="90" y="125" width="20" height="20" fill="none" stroke="rgba(168,85,247,0.5)" stroke-width="2"/>
+            <polygon points="95,145 105,145 100,160" fill="none" stroke="rgba(168,85,247,0.5)" stroke-width="2"/>
+            <circle id="buretteDrop" cx="100" cy="168" r="4" fill="#a855f7" opacity="0"/>
+            <path d="M60,200 Q60,185 75,185 L125,185 Q140,185 140,200 L130,245 Q128,252 120,252 L80,252 Q72,252 70,245 Z" fill="none" stroke="rgba(168,85,247,0.5)" stroke-width="2"/>
+            <clipPath id="erlenClip"><path d="M61,200 Q61,186 76,186 L124,186 Q139,186 139,200 L129,244 Q127,251 120,251 L80,251 Q73,251 71,244 Z"/></clipPath>
+            <g clip-path="url(#erlenClip)">
+              <rect id="erlenLiquid" x="55" y="251" width="90" height="0" fill="url(#buretteGrad)" opacity="0.5"/>
+            </g>
+            <text x="100" y="220" text-anchor="middle" fill="#cbd5e1" font-size="10" font-family="Orbitron" id="buretteLabel">0 mL</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Element Detail Modal -->
+<div class="modal-overlay" id="elemModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ===== ELEMENT DATA (118) =====
+const ELEMENTS = [
+  {n:1,s:'H',nm:'Hidrogênio',m:1.008,c:'nm',g:1,p:1,e:[1]},
+  {n:2,s:'He',nm:'Hélio',m:4.003,c:'ng',g:18,p:1,e:[2]},
+  {n:3,s:'Li',nm:'Lítio',m:6.941,c:'am',g:1,p:2,e:[2,1]},
+  {n:4,s:'Be',nm:'Berílio',m:9.012,c:'ae',g:2,p:2,e:[2,2]},
+  {n:5,s:'B',nm:'Boro',m:10.81,c:'ml',g:13,p:2,e:[2,3]},
+  {n:6,s:'C',nm:'Carbono',m:12.01,c:'nm',g:14,p:2,e:[2,4]},
+  {n:7,s:'N',nm:'Nitrogênio',m:14.01,c:'nm',g:15,p:2,e:[2,5]},
+  {n:8,s:'O',nm:'Oxigênio',m:16.00,c:'nm',g:16,p:2,e:[2,6]},
+  {n:9,s:'F',nm:'Flúor',m:19.00,c:'ha',g:17,p:2,e:[2,7]},
+  {n:10,s:'Ne',nm:'Neônio',m:20.18,c:'ng',g:18,p:2,e:[2,8]},
+  {n:11,s:'Na',nm:'Sódio',m:22.99,c:'am',g:1,p:3,e:[2,8,1]},
+  {n:12,s:'Mg',nm:'Magnésio',m:24.31,c:'ae',g:2,p:3,e:[2,8,2]},
+  {n:13,s:'Al',nm:'Alumínio',m:26.98,c:'pt',g:13,p:3,e:[2,8,3]},
+  {n:14,s:'Si',nm:'Silício',m:28.09,c:'ml',g:14,p:3,e:[2,8,4]},
+  {n:15,s:'P',nm:'Fósforo',m:30.97,c:'nm',g:15,p:3,e:[2,8,5]},
+  {n:16,s:'S',nm:'Enxofre',m:32.07,c:'nm',g:16,p:3,e:[2,8,6]},
+  {n:17,s:'Cl',nm:'Cloro',m:35.45,c:'ha',g:17,p:3,e:[2,8,7]},
+  {n:18,s:'Ar',nm:'Argônio',m:39.95,c:'ng',g:18,p:3,e:[2,8,8]},
+  {n:19,s:'K',nm:'Potássio',m:39.10,c:'am',g:1,p:4,e:[2,8,8,1]},
+  {n:20,s:'Ca',nm:'Cálcio',m:40.08,c:'ae',g:2,p:4,e:[2,8,8,2]},
+  {n:21,s:'Sc',nm:'Escândio',m:44.96,c:'pt',g:3,p:4,e:[2,8,9,2]},
+  {n:22,s:'Ti',nm:'Titânio',m:47.87,c:'pt',g:4,p:4,e:[2,8,10,2]},
+  {n:23,s:'V',nm:'Vanádio',m:50.94,c:'pt',g:5,p:4,e:[2,8,11,2]},
+  {n:24,s:'Cr',nm:'Cromo',m:52.00,c:'pt',g:6,p:4,e:[2,8,13,1]},
+  {n:25,s:'Mn',nm:'Manganês',m:54.94,c:'pt',g:7,p:4,e:[2,8,13,2]},
+  {n:26,s:'Fe',nm:'Ferro',m:55.85,c:'pt',g:8,p:4,e:[2,8,14,2]},
+  {n:27,s:'Co',nm:'Cobalto',m:58.93,c:'pt',g:9,p:4,e:[2,8,15,2]},
+  {n:28,s:'Ni',nm:'Níquel',m:58.69,c:'pt',g:10,p:4,e:[2,8,16,2]},
+  {n:29,s:'Cu',nm:'Cobre',m:63.55,c:'pt',g:11,p:4,e:[2,8,18,1]},
+  {n:30,s:'Zn',nm:'Zinco',m:65.38,c:'pt',g:12,p:4,e:[2,8,18,2]},
+  {n:31,s:'Ga',nm:'Gálio',m:69.72,c:'pt',g:13,p:4,e:[2,8,18,3]},
+  {n:32,s:'Ge',nm:'Germânio',m:72.63,c:'ml',g:14,p:4,e:[2,8,18,4]},
+  {n:33,s:'As',nm:'Arsênio',m:74.92,c:'ml',g:15,p:4,e:[2,8,18,5]},
+  {n:34,s:'Se',nm:'Selênio',m:78.97,c:'nm',g:16,p:4,e:[2,8,18,6]},
+  {n:35,s:'Br',nm:'Bromo',m:79.90,c:'ha',g:17,p:4,e:[2,8,18,7]},
+  {n:36,s:'Kr',nm:'Criptônio',m:83.80,c:'ng',g:18,p:4,e:[2,8,18,8]},
+  {n:37,s:'Rb',nm:'Rubídio',m:85.47,c:'am',g:1,p:5,e:[2,8,18,8,1]},
+  {n:38,s:'Sr',nm:'Estrôncio',m:87.62,c:'ae',g:2,p:5,e:[2,8,18,8,2]},
+  {n:39,s:'Y',nm:'Ítrio',m:88.91,c:'pt',g:3,p:5,e:[2,8,18,9,2]},
+  {n:40,s:'Zr',nm:'Zircônio',m:91.22,c:'pt',g:4,p:5,e:[2,8,18,10,2]},
+  {n:41,s:'Nb',nm:'Nióbio',m:92.91,c:'pt',g:5,p:5,e:[2,8,18,12,1]},
+  {n:42,s:'Mo',nm:'Molibdênio',m:95.95,c:'pt',g:6,p:5,e:[2,8,18,13,1]},
+  {n:43,s:'Tc',nm:'Tecnécio',m:98,c:'pt',g:7,p:5,e:[2,8,18,13,2]},
+  {n:44,s:'Ru',nm:'Rutênio',m:101.1,c:'pt',g:8,p:5,e:[2,8,18,15,1]},
+  {n:45,s:'Rh',nm:'Ródio',m:102.9,c:'pt',g:9,p:5,e:[2,8,18,16,1]},
+  {n:46,s:'Pd',nm:'Paládio',m:106.4,c:'pt',g:10,p:5,e:[2,8,18,18]},
+  {n:47,s:'Ag',nm:'Prata',m:107.9,c:'pt',g:11,p:5,e:[2,8,18,18,1]},
+  {n:48,s:'Cd',nm:'Cádmio',m:112.4,c:'pt',g:12,p:5,e:[2,8,18,18,2]},
+  {n:49,s:'In',nm:'Índio',m:114.8,c:'pt',g:13,p:5,e:[2,8,18,18,3]},
+  {n:50,s:'Sn',nm:'Estanho',m:118.7,c:'pt',g:14,p:5,e:[2,8,18,18,4]},
+  {n:51,s:'Sb',nm:'Antimônio',m:121.8,c:'ml',g:15,p:5,e:[2,8,18,18,5]},
+  {n:52,s:'Te',nm:'Telúrio',m:127.6,c:'ml',g:16,p:5,e:[2,8,18,18,6]},
+  {n:53,s:'I',nm:'Iodo',m:126.9,c:'ha',g:17,p:5,e:[2,8,18,18,7]},
+  {n:54,s:'Xe',nm:'Xenônio',m:131.3,c:'ng',g:18,p:5,e:[2,8,18,18,8]},
+  {n:55,s:'Cs',nm:'Césio',m:132.9,c:'am',g:1,p:6,e:[2,8,18,18,8,1]},
+  {n:56,s:'Ba',nm:'Bário',m:137.3,c:'ae',g:2,p:6,e:[2,8,18,18,8,2]},
+  {n:57,s:'La',nm:'Lantânio',m:138.9,c:'ln',g:3,p:6,e:[2,8,18,18,9,2]},
+  {n:58,s:'Ce',nm:'Cério',m:140.1,c:'ln',g:3,p:6,e:[2,8,18,19,9,2]},
+  {n:59,s:'Pr',nm:'Praseodímio',m:140.9,c:'ln',g:3,p:6,e:[2,8,18,21,8,2]},
+  {n:60,s:'Nd',nm:'Neodímio',m:144.2,c:'ln',g:3,p:6,e:[2,8,18,22,8,2]},
+  {n:61,s:'Pm',nm:'Promécio',m:145,c:'ln',g:3,p:6,e:[2,8,18,23,8,2]},
+  {n:62,s:'Sm',nm:'Samário',m:150.4,c:'ln',g:3,p:6,e:[2,8,18,24,8,2]},
+  {n:63,s:'Eu',nm:'Európio',m:152.0,c:'ln',g:3,p:6,e:[2,8,18,25,8,2]},
+  {n:64,s:'Gd',nm:'Gadolínio',m:157.3,c:'ln',g:3,p:6,e:[2,8,18,25,9,2]},
+  {n:65,s:'Tb',nm:'Térbio',m:158.9,c:'ln',g:3,p:6,e:[2,8,18,27,8,2]},
+  {n:66,s:'Dy',nm:'Disprósio',m:162.5,c:'ln',g:3,p:6,e:[2,8,18,28,8,2]},
+  {n:67,s:'Ho',nm:'Hólmio',m:164.9,c:'ln',g:3,p:6,e:[2,8,18,29,8,2]},
+  {n:68,s:'Er',nm:'Érbio',m:167.3,c:'ln',g:3,p:6,e:[2,8,18,30,8,2]},
+  {n:69,s:'Tm',nm:'Túlio',m:168.9,c:'ln',g:3,p:6,e:[2,8,18,31,8,2]},
+  {n:70,s:'Yb',nm:'Itérbio',m:173.0,c:'ln',g:3,p:6,e:[2,8,18,32,8,2]},
+  {n:71,s:'Lu',nm:'Lutécio',m:175.0,c:'ln',g:3,p:6,e:[2,8,18,32,9,2]},
+  {n:72,s:'Hf',nm:'Háfnio',m:178.5,c:'pt',g:4,p:6,e:[2,8,18,32,10,2]},
+  {n:73,s:'Ta',nm:'Tântalo',m:180.9,c:'pt',g:5,p:6,e:[2,8,18,32,11,2]},
+  {n:74,s:'W',nm:'Tungstênio',m:183.8,c:'pt',g:6,p:6,e:[2,8,18,32,12,2]},
+  {n:75,s:'Re',nm:'Rênio',m:186.2,c:'pt',g:7,p:6,e:[2,8,18,32,13,2]},
+  {n:76,s:'Os',nm:'Ósmio',m:190.2,c:'pt',g:8,p:6,e:[2,8,18,32,14,2]},
+  {n:77,s:'Ir',nm:'Irídio',m:192.2,c:'pt',g:9,p:6,e:[2,8,18,32,15,2]},
+  {n:78,s:'Pt',nm:'Platina',m:195.1,c:'pt',g:10,p:6,e:[2,8,18,32,17,1]},
+  {n:79,s:'Au',nm:'Ouro',m:197.0,c:'pt',g:11,p:6,e:[2,8,18,32,18,1]},
+  {n:80,s:'Hg',nm:'Mercúrio',m:200.6,c:'pt',g:12,p:6,e:[2,8,18,32,18,2]},
+  {n:81,s:'Tl',nm:'Tálio',m:204.4,c:'pt',g:13,p:6,e:[2,8,18,32,18,3]},
+  {n:82,s:'Pb',nm:'Chumbo',m:207.2,c:'pt',g:14,p:6,e:[2,8,18,32,18,4]},
+  {n:83,s:'Bi',nm:'Bismuto',m:209.0,c:'pt',g:15,p:6,e:[2,8,18,32,18,5]},
+  {n:84,s:'Po',nm:'Polônio',m:209,c:'pt',g:16,p:6,e:[2,8,18,32,18,6]},
+  {n:85,s:'At',nm:'Astato',m:210,c:'ha',g:17,p:6,e:[2,8,18,32,18,7]},
+  {n:86,s:'Rn',nm:'Radônio',m:222,c:'ng',g:18,p:6,e:[2,8,18,32,18,8]},
+  {n:87,s:'Fr',nm:'Frâncio',m:223,c:'am',g:1,p:7,e:[2,8,18,32,18,8,1]},
+  {n:88,s:'Ra',nm:'Rádio',m:226,c:'ae',g:2,p:7,e:[2,8,18,32,18,8,2]},
+  {n:89,s:'Ac',nm:'Actínio',m:227,c:'ac',g:3,p:7,e:[2,8,18,32,18,9,2]},
+  {n:90,s:'Th',nm:'Tório',m:232.0,c:'ac',g:3,p:7,e:[2,8,18,32,18,10,2]},
+  {n:91,s:'Pa',nm:'Protactínio',m:231.0,c:'ac',g:3,p:7,e:[2,8,18,32,20,9,2]},
+  {n:92,s:'U',nm:'Urânio',m:238.0,c:'ac',g:3,p:7,e:[2,8,18,32,21,9,2]},
+  {n:93,s:'Np',nm:'Netúnio',m:237,c:'ac',g:3,p:7,e:[2,8,18,32,22,9,2]},
+  {n:94,s:'Pu',nm:'Plutônio',m:244,c:'ac',g:3,p:7,e:[2,8,18,32,24,8,2]},
+  {n:95,s:'Am',nm:'Amerício',m:243,c:'ac',g:3,p:7,e:[2,8,18,32,25,8,2]},
+  {n:96,s:'Cm',nm:'Cúrio',m:247,c:'ac',g:3,p:7,e:[2,8,18,32,25,9,2]},
+  {n:97,s:'Bk',nm:'Berquélio',m:247,c:'ac',g:3,p:7,e:[2,8,18,32,27,8,2]},
+  {n:98,s:'Cf',nm:'Califórnio',m:251,c:'ac',g:3,p:7,e:[2,8,18,32,28,8,2]},
+  {n:99,s:'Es',nm:'Einstênio',m:252,c:'ac',g:3,p:7,e:[2,8,18,32,29,8,2]},
+  {n:100,s:'Fm',nm:'Férmio',m:257,c:'ac',g:3,p:7,e:[2,8,18,32,30,8,2]},
+  {n:101,s:'Md',nm:'Mendelévio',m:258,c:'ac',g:3,p:7,e:[2,8,18,32,31,8,2]},
+  {n:102,s:'No',nm:'Nobélio',m:259,c:'ac',g:3,p:7,e:[2,8,18,32,32,8,2]},
+  {n:103,s:'Lr',nm:'Laurêncio',m:266,c:'ac',g:3,p:7,e:[2,8,18,32,32,8,3]},
+  {n:104,s:'Rf',nm:'Rutherfórdio',m:267,c:'pt',g:4,p:7,e:[2,8,18,32,32,10,2]},
+  {n:105,s:'Db',nm:'Dúbnio',m:268,c:'pt',g:5,p:7,e:[2,8,18,32,32,11,2]},
+  {n:106,s:'Sg',nm:'Seabórgio',m:269,c:'pt',g:6,p:7,e:[2,8,18,32,32,12,2]},
+  {n:107,s:'Bh',nm:'Bóhrio',m:270,c:'pt',g:7,p:7,e:[2,8,18,32,32,13,2]},
+  {n:108,s:'Hs',nm:'Hássio',m:277,c:'pt',g:8,p:7,e:[2,8,18,32,32,14,2]},
+  {n:109,s:'Mt',nm:'Meitnério',m:278,c:'pt',g:9,p:7,e:[2,8,18,32,32,15,2]},
+  {n:110,s:'Ds',nm:'Darmstádio',m:281,c:'pt',g:10,p:7,e:[2,8,18,32,32,17,1]},
+  {n:111,s:'Rg',nm:'Roentgénio',m:282,c:'pt',g:11,p:7,e:[2,8,18,32,32,18,1]},
+  {n:112,s:'Cn',nm:'Copernício',m:285,c:'pt',g:12,p:7,e:[2,8,18,32,32,18,2]},
+  {n:113,s:'Nh',nm:'Nipônio',m:286,c:'pt',g:13,p:7,e:[2,8,18,32,32,18,3]},
+  {n:114,s:'Fl',nm:'Fleróvio',m:289,c:'pt',g:14,p:7,e:[2,8,18,32,32,18,4]},
+  {n:115,s:'Mc',nm:'Moscóvio',m:290,c:'pt',g:15,p:7,e:[2,8,18,32,32,18,5]},
+  {n:116,s:'Lv',nm:'Livermório',m:293,c:'pt',g:16,p:7,e:[2,8,18,32,32,18,6]},
+  {n:117,s:'Ts',nm:'Tenessino',m:294,c:'ha',g:17,p:7,e:[2,8,18,32,32,18,7]},
+  {n:118,s:'Og',nm:'Oganessônio',m:294,c:'ng',g:18,p:7,e:[2,8,18,32,32,18,8]}
+];
+
+const CAT_MAP = {na:'Não Metal',ng:'Gás Nobre',am:'Metal Alcalino',ae:'Metal Alcalino-Terroso',ml:'Metalóide',nm:'Não Metal',ha:'Halogênio',pt:'Metal de Transição',ln:'Lantanídeo',ac:'Actinídeo'};
+const CAT_COLORS = {na:'#3b82f6',ng:'#8b5cf6',am:'#ef4444',ae:'#f97316',ml:'#22c55e',nm:'#14b8a6',ha:'#06b6d4',pt:'#eab308',ln:'#a855f7',ac:'#ec4899'};
+const CAT_CSS = {na:'cat-na',ng:'cat-ng',am:'cat-am',ae:'cat-ae',ml:'cat-ml',nm:'cat-nm',ha:'cat-ha',pt:'cat-pt',ln:'cat-ln',ac:'cat-ac'};
+
+const PT_POS = {
+  1:{r:1,g:1},2:{r:1,g:18},3:{r:2,g:1},4:{r:2,g:2},5:{r:2,g:13},6:{r:2,g:14},7:{r:2,g:15},8:{r:2,g:16},9:{r:2,g:17},10:{r:2,g:18},
+  11:{r:3,g:1},12:{r:3,g:2},13:{r:3,g:13},14:{r:3,g:14},15:{r:3,g:15},16:{r:3,g:16},17:{r:3,g:17},18:{r:3,g:18},
+  19:{r:4,g:1},20:{r:4,g:2},21:{r:4,g:3},22:{r:4,g:4},23:{r:4,g:5},24:{r:4,g:6},25:{r:4,g:7},26:{r:4,g:8},27:{r:4,g:9},28:{r:4,g:10},
+  29:{r:4,g:11},30:{r:4,g:12},31:{r:4,g:13},32:{r:4,g:14},33:{r:4,g:15},34:{r:4,g:16},35:{r:4,g:17},36:{r:4,g:18},
+  37:{r:5,g:1},38:{r:5,g:2},39:{r:5,g:3},40:{r:5,g:4},41:{r:5,g:5},42:{r:5,g:6},43:{r:5,g:7},44:{r:5,g:8},45:{r:5,g:9},46:{r:5,g:10},
+  47:{r:5,g:11},48:{r:5,g:12},49:{r:5,g:13},50:{r:5,g:14},51:{r:5,g:15},52:{r:5,g:16},53:{r:5,g:17},54:{r:5,g:18},
+  55:{r:6,g:1},56:{r:6,g:2},72:{r:6,g:4},73:{r:6,g:5},74:{r:6,g:6},75:{r:6,g:7},76:{r:6,g:8},77:{r:6,g:9},78:{r:6,g:10},
+  79:{r:6,g:11},80:{r:6,g:12},81:{r:6,g:13},82:{r:6,g:14},83:{r:6,g:15},84:{r:6,g:16},85:{r:6,g:17},86:{r:6,g:18},
+  87:{r:7,g:1},88:{r:7,g:2},104:{r:7,g:4},105:{r:7,g:5},106:{r:7,g:6},107:{r:7,g:7},108:{r:7,g:8},109:{r:7,g:9},110:{r:7,g:10},
+  111:{r:7,g:11},112:{r:7,g:12},113:{r:7,g:13},114:{r:7,g:14},115:{r:7,g:15},116:{r:7,g:16},117:{r:7,g:17},118:{r:7,g:18}
+};
+const LN_POS = {57:{r:9,g:4},58:{r:9,g:5},59:{r:9,g:6},60:{r:9,g:7},61:{r:9,g:8},62:{r:9,g:9},63:{r:9,g:10},64:{r:9,g:11},65:{r:9,g:12},66:{r:9,g:13},67:{r:9,g:14},68:{r:9,g:15},69:{r:9,g:16},70:{r:9,g:17},71:{r:9,g:18}};
+const AC_POS = {89:{r:10,g:4},90:{r:10,g:5},91:{r:10,g:6},92:{r:10,g:7},93:{r:10,g:8},94:{r:10,g:9},95:{r:10,g:10},96:{r:10,g:11},97:{r:10,g:12},98:{r:10,g:13},99:{r:10,g:14},100:{r:10,g:15},101:{r:10,g:16},102:{r:10,g:17},103:{r:10,g:18}};
+const ALL_POS = {...PT_POS,...LN_POS,...AC_POS};
+
+function buildPeriodicTable() {
+  const grid = document.getElementById('ptGrid');
+  grid.innerHTML = '';
+  const allNums = Object.keys(ALL_POS).map(Number).sort((a,b) => {
+    const pa = ALL_POS[a], pb = ALL_POS[b];
+    if (pa.r !== pb.r) return pa.r - pb.r;
+    return pa.g - pb.g;
+  });
+  const posMap = {};
+  allNums.forEach(num => { const p = ALL_POS[num]; posMap[`${p.r}-${p.g}`] = num; });
+
+  const rows = [1,2,3,4,5,6,7,8,9,10];
+  rows.forEach(rowNum => {
+    if (rowNum === 8) { const s = document.createElement('div'); s.className = 'pt-separator'; grid.appendChild(s); return; }
+    for (let col = 1; col <= 18; col++) {
+      const key = `${rowNum}-${col}`;
+      if (rowNum === 6 && col === 3) { const m = document.createElement('div'); m.className = 'el-cell'; m.style.cssText = 'border:1px dashed rgba(168,85,247,0.3);background:transparent;'; m.innerHTML = '<span class="sym" style="font-size:0.5rem;">57-71</span>'; grid.appendChild(m); continue; }
+      if (rowNum === 7 && col === 3) { const m = document.createElement('div'); m.className = 'el-cell'; m.style.cssText = 'border:1px dashed rgba(236,72,153,0.3);background:transparent;'; m.innerHTML = '<span class="sym" style="font-size:0.5rem;">89-103</span>'; grid.appendChild(m); continue; }
+      if (rowNum === 9 && col >= 1 && col <= 3) { const l = document.createElement('div'); l.className = 'el-cell'; l.style.cssText = 'background:transparent;border:none;'; if (col === 1) l.innerHTML = '<span style="font-size:0.5rem;color:var(--neon-purple);">Lantanídeos →</span>'; grid.appendChild(l); continue; }
+      if (rowNum === 10 && col >= 1 && col <= 3) { const l = document.createElement('div'); l.className = 'el-cell'; l.style.cssText = 'background:transparent;border:none;'; if (col === 1) l.innerHTML = '<span style="font-size:0.5rem;color:var(--neon-magenta);">Actinídeos →</span>'; grid.appendChild(l); continue; }
+      const num = posMap[key];
+      if (num) {
+        const el = ELEMENTS.find(e => e.n === num);
+        const cell = document.createElement('div');
+        cell.className = `el-cell ${CAT_CSS[el.c]}`;
+        cell.innerHTML = `<span class="num">${el.n}</span><span class="sym">${el.s}</span><span class="mass">${el.m}</span>`;
+        cell.title = `${el.nm} (${el.n})`;
+        cell.style.background = `${CAT_COLORS[el.c]}15`;
+        cell.addEventListener('click', () => showElementModal(el));
+        grid.appendChild(cell);
+      } else { const e = document.createElement('div'); e.className = 'empty-cell'; grid.appendChild(e); }
+    }
+  });
+}
+
+function showElementModal(el) {
+  const modal = document.getElementById('elemModal');
+  const body = document.getElementById('modalBody');
+  body.innerHTML = `
+    <h2 class="neon-text" style="font-size:2rem;margin-bottom:0.25rem;">${el.s}</h2>
+    <p style="color:var(--text-lavender);margin-bottom:1rem;">${el.nm} — Nº ${el.n}</p>
+    <canvas id="bohrCanvas" class="bohr-canvas" width="250" height="250"></canvas>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:1rem;">
+      <div class="result-box"><h4>Massa</h4><p>${el.m} u</p></div>
+      <div class="result-box"><h4>Categoria</h4><p>${CAT_MAP[el.c]}</p></div>
+      <div class="result-box"><h4>Período</h4><p>${el.p}</p></div>
+      <div class="result-box"><h4>Grupo</h4><p>${el.g}</p></div>
+      <div class="result-box" style="grid-column:1/-1;"><h4>Distribuição Eletrônica</h4><p>${el.e.join(' · ')}</p></div>
+    </div>`;
+  modal.classList.add('show');
+  setTimeout(() => drawBohr(el.e), 100);
+}
+
+let bohrAnimId;
+function drawBohr(shells) {
+  const canvas = document.getElementById('bohrCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const cx = 125, cy = 125;
+  if (bohrAnimId) cancelAnimationFrame(bohrAnimId);
+  let animTime = 0;
+  function anim() {
+    ctx.clearRect(0, 0, 250, 250);
+    animTime += 0.016;
+    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 15);
+    grad.addColorStop(0, '#a855f7'); grad.addColorStop(1, '#ec4899');
+    ctx.beginPath(); ctx.arc(cx, cy, 12, 0, Math.PI * 2);
+    ctx.fillStyle = grad; ctx.shadowColor = '#a855f7'; ctx.shadowBlur = 15; ctx.fill(); ctx.shadowBlur = 0;
+    shells.forEach((count, i) => {
+      const radius = 30 + i * 22;
+      ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(168, 85, 247, ${0.4 - i * 0.05})`; ctx.lineWidth = 1; ctx.stroke();
+      const angleStep = (Math.PI * 2) / count;
+      for (let j = 0; j < count; j++) {
+        const angle = angleStep * j + animTime * (i + 1);
+        const ex = cx + Math.cos(angle) * radius;
+        const ey = cy + Math.sin(angle) * radius;
+        ctx.beginPath(); ctx.arc(ex, ey, 3, 0, Math.PI * 2);
+        ctx.fillStyle = '#06b6d4'; ctx.shadowColor = '#06b6d4'; ctx.shadowBlur = 8; ctx.fill(); ctx.shadowBlur = 0;
+      }
+    });
+    bohrAnimId = requestAnimationFrame(anim);
+  }
+  anim();
+}
+
+function closeModal() { document.getElementById('elemModal').classList.remove('show'); if (bohrAnimId) cancelAnimationFrame(bohrAnimId); }
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const tab = document.getElementById('tab-' + tabId);
+  if (tab) tab.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    const labels = {dashboard:'dash',periodic:'tabela',library:'biblio','calc-atom':'calcul','calc-solution':'calcul','calc-ph':'calcul','calc-titration':'calcul'};
+    if (labels[tabId] && b.textContent.toLowerCase().includes(labels[tabId])) b.classList.add('active');
+  });
+  if (tabId === 'periodic') buildPeriodicTable();
+}
+
+// ===== LIBRARY =====
+const ARTICLES = [
+  {id:'art-1',title:'A Tabela Periódica',icon:'🔮',summary:'Histórico de Mendeleev a Moseley, estrutura, propriedades periódicas e nomenclatura.',
+    content:`<h2>Histórico da Tabela Periódica</h2><p>A Tabela Periódica dos Elementos é um dos ícones mais reconhecíveis da ciência. Ela organiza os 118 elementos conhecidos de forma sistemática, revelando padrões nas suas propriedades químicas e físicas.</p><h3>Dmitri Mendeleev (1869)</h3><p>O químico russo Dmitri Mendeleev propôs a primeira versão amplamente aceita da tabela periódica. Ele organizou os 63 elementos conhecidos em ordem crescente de massa atômica e percebeu que as propriedades dos elementos se repetiam periodicamente. Mendeleev deixou lacunas para elementos ainda não descobertos e previu suas propriedades com notável precisão.</p><h3>Henry Moseley (1913)</h3><p>Moseley demonstrou que o número atômico (Z), e não a massa atômica, é a verdadeira base da periodicidade. Isso corrigiu anomalias como a posição do telúrio e do iodo.</p><h2>Estrutura da Tabela Periódica</h2><p>A tabela moderna possui <strong>18 grupos</strong> (colunas verticais) e <strong>7 períodos</strong> (linhas horizontais).</p><ul><li><strong>Grupos:</strong> Elementos do mesmo grupo compartilham propriedades químicas semelhantes.</li><li><strong>Períodos:</strong> Correspondem ao número de camadas eletrônicas ocupadas.</li></ul><h3>Exceções Notáveis</h3><ul><li><strong>Hidrogênio (H):</strong> Grupo 1, mas não é um metal alcalino.</li><li><strong>Hélio (He):</strong> Configuração 1s², posicionado no grupo 18 por suas propriedades de gás nobre.</li><li><strong>Lantanídeos (Z=57-71) e Actinídeos (Z=89-103):</strong> Colocados separadamente na parte inferior.</li></ul><h2>Propriedades Periódicas</h2><h3>Raio Atômico</h3><p>Aumenta de cima para baixo (mais camadas) e da direita para a esquerda.</p><h3>Eletronegatividade</h3><p>Aumenta da esquerda para a direita e de baixo para cima. O flúor (F) é o elemento mais eletronegativo (4,0 na escala de Pauling).</p><h3>Energia de Ionização</h3><p>Energia necessária para remover um elétron do átomo gasoso. Aumenta da esquerda para a direita e de baixo para cima.</p><h3>Afinidade Eletrônica</h3><p>Energia liberada quando um átomo gasoso captura um elétron.</p><h3>Eletropositividade</h3><p>Tendência de perder elétrons. Aumenta de cima para baixo e da direita para a esquerda.</p><div class="ref-box"><strong>Referências:</strong> ATKINS, P.; DE PAULA, J. <em>Physical Chemistry</em>. 11th ed. Oxford, 2018. | CHANG, R. <em>Chemistry</em>. 13th ed. McGraw-Hill, 2019.</div>`},
+  {id:'art-2',title:'Ligações Químicas e Polaridade',icon:'🔗',summary:'Ligações iônica, covalente e metálica, teoria do octeto, VSEPR e polaridade molecular.',
+    content:`<h2>Tipos de Ligação Química</h2><p>As ligações químicas são forças de atração que mantêm átomos unidos em moléculas ou cristais.</p><h3>Ligação Iônica</h3><p>Ocorre entre metais e não metais, com ΔEN > 1,7. Há transferência de elétrons. Exemplo: NaCl.</p><h3>Ligação Covalente</h3><p>Ocorre entre não metais com ΔEN < 1,7. Há compartilhamento de pares de elétrons.</p><ul><li><strong>Covalente apolar:</strong> ΔEN ≈ 0 (ex: O₂)</li><li><strong>Covalente polar:</strong> 0 < ΔEN < 1,7 (ex: HCl)</li><li><strong>Dativa:</strong> Um átomo fornece ambos os elétrons (ex: CO)</li></ul><h3>Ligação Metálica</h3><p>Os elétrons de valência formam um "mar" de elétrons deslocalizados.</p><h2>Teoria do Octeto e Exceções</h2><ul><li><strong>Octeto incompleto:</strong> Be, B — ex: BF₃</li><li><strong>Octeto expandido:</strong> Elementos do 3º período+ — ex: SF₆</li><li><strong>Número ímpar:</strong> Espécies radicais — ex: NO</li></ul><h2>Geometria Molecular (VSEPR)</h2><ul><li>2 pares: Linear (180°)</li><li>3 pares: Trigonal planar (120°)</li><li>4 pares: Tetraédrica (109,5°)</li><li>5 pares: Bipirâmide trigonal</li><li>6 pares: Octaédrica (90°)</li></ul><h2>Polaridade Molecular</h2><p>Uma molécula é polar quando possui ligações polares e geometria assimétrica.</p><div class="ref-box"><strong>Referências:</strong> PAULING, L. <em>The Nature of the Chemical Bond</em>. 3rd ed. Cornell, 1960. | GILLESPIE, R. J. <em>Q. Rev. Chem. Soc.</em>, 1957.</div>`},
+  {id:'art-3',title:'Solubilidade e Misturas',icon:'💧',summary:'Solutos, solventes, limite de solubilidade e métodos de separação.',
+    content:`<h2>Conceitos Fundamentais</h2><p>Uma <strong>solução</strong> é uma mistura homogênea de duas ou mais substâncias.</p><h3>Limite de Solubilidade</h3><ul><li><strong>Insaturada:</strong> m(soluto) < coeficiente</li><li><strong>Saturada:</strong> m(soluto) = coeficiente</li><li><strong>Supersaturada:</strong> m(soluto) > coeficiente</li></ul><h2>Fatores que Afetam a Solubilidade</h2><h3>Temperatura</h3><ul><li>Sólidos: geralmente aumenta com T</li><li>Gases: diminui com T</li></ul><h3>Pressão — Lei de Henry</h3><p>S = k<sub>H</sub> × P</p><h2>Métodos de Separação</h2><ul><li><strong>Filtração:</strong> sólido insolúvel de líquido</li><li><strong>Destilação simples:</strong> sólido dissolvido de líquido</li><li><strong>Destilação fracionada:</strong> líquidos miscíveis com PE diferentes</li><li><strong>Cromatografia:</strong> baseado na diferença de afinidade</li></ul><div class="ref-box"><strong>Referências:</strong> RUSSELL, J. B. <em>Química Geral</em>. 2nd ed. Pearson, 2004. | SKOOG, D. A. et al. <em>Fundamentals of Analytical Chemistry</em>. 9th ed. Cengage, 2013.</div>`},
+  {id:'art-4',title:'Preparo de Soluções e Concentrações',icon:'⚗️',summary:'Metodologia experimental e relações matemáticas de concentração.',
+    content:`<h2>Metodologia para Preparo de Soluções</h2><ol><li>Calcular a massa necessária de soluto</li><li>Pesar o soluto em balança analítica</li><li>Dissolver parcialmente em béquer</li><li>Transferir para balão volumétrico</li><li>Completar até a marca de aferição</li><li>Homogeneizar por inversão</li></ol><h3>Diluição</h3><p><strong>M<sub>inicial</sub> × V<sub>inicial</sub> = M<sub>final</sub> × V<sub>final</sub></strong></p><h2>Relações Matemáticas</h2><h3>Concentração Comum (C)</h3><p>C = m(soluto) / V(solução) — g/L</p><h3>Título (% m/V)</h3><p>T = [m(g) / V(mL)] × 100</p><h3>Concentração Molar (M)</h3><p>M = m(soluto) / [MM × V(L)] — mol/L</p><h3>Relação C e M</h3><p>C = M × MM</p><div class="ref-box"><strong>Referências:</strong> HARRIS, D. C. <em>Quantitative Chemical Analysis</em>. 9th ed. Freeman, 2015.</div>`},
+  {id:'art-5',title:'Dissociação da Água',icon:'💎',summary:'Autoionização, constante Kw, pH neutro e variação com a temperatura.',
+    content:`<h2>Autoionização da Água</h2><p><strong>2 H₂O ⇌ H₃O⁺ + OH⁻</strong></p><h2>Constante Kw</h2><p>K<sub>w</sub> = [H⁺][OH⁻]</p><p>A 25 °C: K<sub>w</sub> = 1,0 × 10⁻¹⁴</p><p>pH neutro a 25 °C = 7,00</p><h2>Variação com a Temperatura</h2><ul><li>0 °C: pH neutro ≈ 7,47</li><li>25 °C: pH neutro = 7,00</li><li>50 °C: pH neutro ≈ 6,63</li><li>100 °C: pH neutro ≈ 6,14</li></ul><h2>Relações</h2><p>pH = -log[H⁺], pOH = -log[OH⁻], pH + pOH = 14,00 (a 25 °C)</p><div class="ref-box"><strong>Referências:</strong> ATKINS, P.; DE PAULA, J. <em>Physical Chemistry</em>. 11th ed. Oxford, 2018.</div>`},
+  {id:'art-6',title:'Ácidos e Bases',icon:'🧬',summary:'Arrhenius, Brønsted-Lowry, Lewis, força, Ka, Kb, pKa e grau de ionização.',
+    content:`<h2>Definições</h2><h3>Arrhenius (1884)</h3><ul><li>Ácido: libera H⁺ em solução aquosa</li><li>Base: libera OH⁻ em solução aquosa</li></ul><h3>Brønsted-Lowry (1923)</h3><ul><li>Ácido: doador de prótons (H⁺)</li><li>Base: receptor de prótons (H⁺)</li></ul><h3>Lewis (1923)</h3><ul><li>Ácido: receptor de par de elétrons</li><li>Base: doador de par de elétrons</li></ul><h2>Força de Ácidos e Bases</h2><p>Ácidos fortes: HCl, HBr, HI, HNO₃, HClO₄, H₂SO₄</p><h2>Constantes</h2><p>K<sub>a</sub> = [H⁺][A⁻] / [HA], pK<sub>a</sub> = -log K<sub>a</sub></p><p>K<sub>a</sub> × K<sub>b</sub> = K<sub>w</sub> = 1,0 × 10⁻¹⁴</p><h2>Cálculo de pH</h2><p><strong>Ácido forte:</strong> [H⁺] = x × C₀ → pH = -log(x × C₀)</p><p><strong>Ácido fraco:</strong> [H⁺]² + K<sub>a</sub>[H⁺] - K<sub>a</sub>C₀ = 0</p><div class="ref-box"><strong>Referências:</strong> PETRUCCI, R. H. et al. <em>General Chemistry</em>. 11th ed. Pearson, 2016.</div>`},
+  {id:'art-7',title:'Neutralização e Titulação',icon:'📊',summary:'Reação de neutralização, estequiometria, volumetria, ponto de equivalência e curvas.',
+    content:`<h2>Reação de Neutralização</h2><p><strong>H⁺ + OH⁻ → H₂O</strong></p><h2>Estequiometria</h2><p><strong>M<sub>A</sub> × V<sub>A</sub> × x<sub>A</sub> = M<sub>B</sub> × V<sub>B</sub> × x<sub>B</sub></strong></p><h2>Volumetria de Neutralização</h2><ol><li>Colocar volume conhecido no Erlenmeyer</li><li>Adicionar indicador</li><li>Gotejar titulante da bureta</li><li>Aguardar viragem do indicador</li></ol><h3>Indicadores</h3><ul><li>Fenolftaleína: incolor → rosa (pH 8,2-10,0)</li><li>Alaranjado de metila: vermelho → amarelo (pH 3,1-4,4)</li></ul><h2>Curvas de Titulação</h2><p>Ácido Forte + Base Forte: ponto de equivalência em pH ≈ 7.</p><p>Ácido Fraco + Base Forte: ponto de equivalência em pH > 7.</p><div class="ref-box"><strong>Referências:</strong> HARRIS, D. C. <em>Quantitative Chemical Analysis</em>. 9th ed. Freeman, 2015.</div>`}
+];
+
+function buildLibrary() {
+  const list = document.getElementById('libraryList');
+  const views = document.getElementById('articleViews');
+  ARTICLES.forEach((art, i) => {
+    list.innerHTML += `<div class="glass-card library-card" onclick="openArticle(${i})"><div class="card-icon">${art.icon}</div><h3>${art.title}</h3><p>${art.summary}</p></div>`;
+    views.innerHTML += `<div id="${art.id}" class="article-view"><button class="back-btn" onclick="backToLibrary()">← Voltar à Biblioteca</button><div class="glass-card" style="padding:2rem;"><h2 class="neon-text" style="margin-bottom:1rem;">${art.icon} ${art.title}</h2><div class="article-content">${art.content}</div></div></div>`;
+  });
+}
+function openArticle(idx) {
+  document.getElementById('libraryList').style.display = 'none';
+  document.getElementById('articleViews').style.display = 'block';
+  ARTICLES.forEach((_, i) => { document.getElementById(ARTICLES[i].id).classList.toggle('active', i === idx); });
+}
+function backToLibrary() { document.getElementById('libraryList').style.display = 'grid'; document.getElementById('articleViews').style.display = 'none'; }
+
+// ===== CALCULATOR 1 =====
+function calcAtom() {
+  const A1=parseFloat(document.getElementById('a1_A').value),Z1=parseFloat(document.getElementById('a1_Z').value),C1=parseFloat(document.getElementById('a1_C').value);
+  const A2=parseFloat(document.getElementById('a2_A').value),Z2=parseFloat(document.getElementById('a2_Z').value),C2=parseFloat(document.getElementById('a2_C').value);
+  const p1=Z1,n1=A1-Z1,e1=Z1-C1,p2=Z2,n2=A2-Z2,e2=Z2-C2;
+  let relations=[];
+  if(Z1===Z2&&A1!==A2)relations.push('ISÓTOPOS (mesmo Z)');
+  if(n1===n2&&Z1!==Z2)relations.push('ISÓTONOS (mesmo n)');
+  if(A1===A2&&Z1!==Z2)relations.push('ISÓBAROS (mesma A)');
+  if(e1===e2&&Z1!==Z2)relations.push('ISOELETRÔNICOS (mesmo e⁻)');
+  if(relations.length===0&&Z1===Z2&&A1===A2)relations.push('MESMO ELEMENTO');
+  if(relations.length===0)relations.push('Nenhuma relação especial');
+  const res=document.getElementById('atomResult');res.style.display='block';
+  res.innerHTML=`<h4>Relações Identificadas</h4>${relations.map(r=>`<span class="result-badge">${r}</span>`).join('')}`;
+  document.getElementById('atomCompare').innerHTML=`
+    <div class="result-box"><h4>Átomo 1</h4><p>Prótons: <strong>${p1}</strong></p><p>Nêutrons: <strong>${n1}</strong></p><p>Elétrons: <strong>${e1}</strong></p></div>
+    <div class="result-box"><h4>Átomo 2</h4><p>Prótons: <strong>${p2}</strong></p><p>Nêutrons: <strong>${n2}</strong></p><p>Elétrons: <strong>${e2}</strong></p></div>`;
+}
+
+// ===== CALCULATOR 2 =====
+function calcSolution() {
+  const mass=parseFloat(document.getElementById('sol_mass').value),vol=parseFloat(document.getElementById('sol_vol').value),mm=parseFloat(document.getElementById('sol_mm').value);
+  const volML=vol*1000,C=mass/vol,T=(mass/volML)*100,M=mass/(mm*vol);
+  const res=document.getElementById('solResult');res.style.display='block';
+  res.innerHTML=`<h4>Resultados</h4><p>Concentração Comum: <strong>${C.toFixed(4)} g/L</strong></p><p>Título (% m/V): <strong>${T.toFixed(4)}%</strong></p><p>Concentração Molar: <strong>${M.toFixed(4)} mol/L</strong></p>`;
+  const liquidH=Math.min(M*20,200),liquidY=264-liquidH;
+  document.getElementById('liquidRect').setAttribute('y',liquidY);
+  document.getElementById('liquidRect').setAttribute('height',liquidH);
+  document.getElementById('flaskLabel').textContent=M.toFixed(3)+' mol/L';
+}
+
+// ===== CALCULATOR 3 =====
+function togglePhInput(){const m=document.getElementById('ph_mode').value;document.getElementById('phAlphaGroup').style.display=m==='alpha'?'block':'none';document.getElementById('phConstGroup').style.display=m==='constant'?'block':'none';}
+function calcPH(){
+  const nature=document.getElementById('ph_nature').value,strength=document.getElementById('ph_strength').value,type=parseInt(document.getElementById('ph_type').value),conc=parseFloat(document.getElementById('ph_conc').value);
+  const mode=document.getElementById('ph_mode').value,alpha=parseFloat(document.getElementById('ph_alpha').value),kVal=parseFloat(document.getElementById('ph_k').value);
+  let hConc,ohConc,pH,pOH;
+  if(strength==='strong'){
+    if(nature==='acid'){hConc=type*conc;pH=-Math.log10(hConc);pOH=14-pH;ohConc=Math.pow(10,-pOH);}
+    else{ohConc=type*conc;pOH=-Math.log10(ohConc);pH=14-pOH;hConc=Math.pow(10,-pH);}
+  }else{
+    let alphaEff;
+    if(mode==='alpha')alphaEff=alpha/100;
+    else{const a=1,b=kVal,c=-kVal*conc;alphaEff=(-b+Math.sqrt(b*b-4*a*c))/(2*a)/conc;}
+    if(nature==='acid'){hConc=type*conc*alphaEff;pH=hConc>0?-Math.log10(hConc):14;pOH=14-pH;ohConc=Math.pow(10,-pOH);}
+    else{ohConc=type*conc*alphaEff;pOH=ohConc>0?-Math.log10(ohConc):14;pH=14-pOH;hConc=Math.pow(10,-pH);}
+  }
+  pH=Math.max(0,Math.min(14,pH));
+  const res=document.getElementById('phResult');res.style.display='block';
+  res.innerHTML=`<h4>Resultados</h4><p style="font-size:1.5rem;text-align:center;margin:0.5rem 0;"><span class="neon-text" style="font-size:2.5rem;">pH = ${pH.toFixed(2)}</span></p><p>pOH: ${pOH.toFixed(2)}</p><p>[H⁺]: ${hConc.toExponential(3)} mol/L</p><p>[OH⁻]: ${ohConc.toExponential(3)} mol/L</p><p>Caráter: ${pH<7?'🔴 Ácido':pH>7?'🟣 Básico':'⚪ Neutro'}</p>`;
+  const tubeH=130*(1-pH/14);document.getElementById('tubeLiquid').setAttribute('y',230-tubeH);document.getElementById('tubeLiquid').setAttribute('height',tubeH);
+  const red=Math.max(0,Math.min(255,255*(1-pH/7))),blue=Math.max(0,Math.min(255,255*((pH-7)/7))),green=Math.max(0,Math.min(255,100*Math.sin(pH/14*Math.PI)));
+  document.getElementById('tubeStop1').setAttribute('stop-color',`rgb(${red},${green},${blue})`);
+  document.getElementById('tubeStop2').setAttribute('stop-color',`rgb(${Math.max(0,red-80)},${Math.max(0,green-40)},${Math.max(0,blue-80)})`);
+  document.getElementById('tubeLabel').textContent='pH: '+pH.toFixed(2);
+}
+
+// ===== CALCULATOR 4 =====
+function calcTitration(){
+  const xA=parseInt(document.getElementById('tit_xA').value),mA=parseFloat(document.getElementById('tit_mA').value),VA=parseFloat(document.getElementById('tit_VA').value);
+  const xB=parseInt(document.getElementById('tit_xB').value),mB=parseFloat(document.getElementById('tit_mB').value);
+  const Veq=(mA*VA*xA)/(mB*xB);
+  const VBmax=parseFloat(document.getElementById('tit_VB_max').value);
+  const points=[];const steps=100;
+  for(let i=0;i<=steps;i++){
+    const VB=(VBmax/steps)*i;
+    const molHA=mA*VA*xA,molBOH=mB*VB*xB;
+    const totalVol=(VA+VB)/1000;let pH;
+    if(VB===0)pH=-Math.log10(mA*xA);
+    else if(molBOH<molHA){const excessHA=molHA-molBOH;pH=-Math.log10(Math.max(excessHA/totalVol,1e-14));}
+    else if(Math.abs(molBOH-molHA)<1e-10)pH=7;
+    else{const excessBOH=molBOH-molHA;pOH=-Math.log10(Math.max(excessBOH/totalVol,1e-14));pH=14-pOH;}
+    points.push({VB,pH:Math.max(0,Math.min(14,pH))});
+  }
+  const canvas=document.getElementById('titrationCanvas');
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth*2;canvas.height=500;
+  ctx.scale(2,2);
+  const w=canvas.offsetWidth,h=250;
+  const pad={t:20,r:20,b:40,l:50};
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle='rgba(168,85,247,0.1)';ctx.lineWidth=0.5;
+  for(let p=0;p<=14;p+=2){const y=pad.t+(h-pad.t-pad.b)*(1-p/14);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillStyle='#cbd5e1';ctx.font='9px Inter';ctx.fillText(p,pad.l-15,y+3);}
+  for(let v=0;v<=VBmax;v+=VBmax/5){const x=pad.l+(w-pad.l-pad.r)*(v/VBmax);ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,h-pad.b);ctx.stroke();ctx.fillStyle='#cbd5e1';ctx.font='9px Inter';ctx.fillText(v.toFixed(0),x-8,h-pad.b+15);}
+  ctx.fillStyle='#a855f7';ctx.font='bold 10px Orbitron';ctx.save();ctx.translate(12,h/2);ctx.rotate(-Math.PI/2);ctx.fillText('pH',-10,3);ctx.restore();
+  ctx.fillText('V (mL)',w/2-20,h-5);
+  ctx.beginPath();ctx.strokeStyle='#a855f7';ctx.lineWidth=2;ctx.shadowColor='#a855f7';ctx.shadowBlur=8;
+  points.forEach((pt,i)=>{const x=pad.l+(w-pad.l-pad.r)*(pt.VB/VBmax);const y=pad.t+(h-pad.t-pad.b)*(1-pt.pH/14);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.stroke();ctx.shadowBlur=0;
+  const eqX=pad.l+(w-pad.l-pad.r)*(Veq/VBmax);
+  ctx.beginPath();ctx.setLineDash([4,4]);ctx.strokeStyle='#ec4899';ctx.lineWidth=1;ctx.moveTo(eqX,pad.t);ctx.lineTo(eqX,h-pad.b);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#ec4899';ctx.font='9px Orbitron';ctx.fillText('Eq: '+Veq.toFixed(1)+' mL',eqX-15,pad.t+12);
+  const fillH=Math.min(Veq/VBmax*100,100);
+  document.getElementById('erlenLiquid').setAttribute('y',251-fillH*0.5);document.getElementById('erlenLiquid').setAttribute('height',fillH*0.5);
+  document.getElementById('buretteLabel').textContent='Veq: '+Veq.toFixed(1)+' mL';
+  const res=document.getElementById('titResult');res.style.display='block';
+  res.innerHTML=`<h4>Resultado</h4><p>Volume no ponto de equivalência: <strong>${Veq.toFixed(2)} mL</strong></p><p>M<sub>A</sub>×V<sub>A</sub>×x<sub>A</sub> = M<sub>B</sub>×V<sub>B</sub>×x<sub>B</sub></p>`;
+  let dropY=168;
+  const dropAnim=setInterval(()=>{dropY+=1.5;const drop=document.getElementById('buretteDrop');if(drop){drop.setAttribute('cy',dropY);drop.setAttribute('opacity',dropY<200?'0.8':'0');}if(dropY>200){drop.setAttribute('cy',168);drop.setAttribute('opacity','0');clearInterval(dropAnim);}},16);
+}
+
+// ===== BACKGROUND PARTICLES =====
+function initParticles(){
+  const canvas=document.getElementById('bgCanvas');const ctx=canvas.getContext('2d');let W,H;const particles=[];const count=60;
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}resize();window.addEventListener('resize',resize);
+  for(let i=0;i<count;i++)particles.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,r:Math.random()*2+0.5,color:['#a855f7','#ec4899','#06b6d4'][Math.floor(Math.random()*3)]});
+  function draw(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.globalAlpha=0.6;ctx.fill();});ctx.globalAlpha=1;for(let i=0;i<count;i++)for(let j=i+1;j<count;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<150){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle='rgba(168,85,247,'+(0.15*(1-dist/150))+')';ctx.lineWidth=0.5;ctx.stroke();}}requestAnimationFrame(draw);}draw();
+}
+
+// ===== 3D TILT =====
+function initTilt(){document.querySelectorAll('.glass-card').forEach(card=>{card.addEventListener('mousemove',e=>{const rect=card.getBoundingClientRect();const x=e.clientX-rect.left,y=e.clientY-rect.top;const cx=rect.width/2,cy=rect.height/2;const rotateX=((y-cy)/cy)*-5,rotateY=((x-cx)/cx)*5;card.style.transform='perspective(1000px) rotateX('+rotateX+'deg) rotateY('+rotateY+'deg) scale3d(1.02,1.02,1.02)';});card.addEventListener('mouseleave',()=>{card.style.transform='perspective(1000px) rotateX(0) rotateY(0) scale3d(1,1,1)';});});}
+
+// ===== LOADING SCREEN =====
+function initLoading(){
+  const screen=document.getElementById('loadingScreen');
+  const bar=document.getElementById('loadingBar');
+  const duration=3000;
+  const startTime=Date.now();
+  function update(){
+    const elapsed=Date.now()-startTime;
+    const progress=Math.min(elapsed/duration*100,100);
+    bar.style.width=progress+'%';
+    if(elapsed<duration){requestAnimationFrame(update);}
+    else{screen.classList.add('hidden');setTimeout(()=>{screen.style.display='none';},600);}
+  }
+  requestAnimationFrame(update);
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded',()=>{
+  initLoading();
+  buildPeriodicTable();
+  buildLibrary();
+  initParticles();
+  setTimeout(initTilt,500);
+  document.getElementById('elemModal').addEventListener('click',e=>{if(e.target.id==='elemModal')closeModal();});
+});
+</script>
+</body>
+</html>
+
